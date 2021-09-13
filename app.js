@@ -27,7 +27,6 @@ app.use(express.json());
 app.use(cors());
 
 app.use(middleware.tokenExtractor);
-app.use(middleware.userExtractor);
 
 /* register routes */
 app.use('/api/users' ,userRouter);

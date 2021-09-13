@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
     id: newUser.id
   }
   const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '2h' });
-  res.json({ token, username: newUser.username, id: newUser.id });
+  res.json({ token, ...userForToken });
 }
 
 const loginUser = async (req, res) => {

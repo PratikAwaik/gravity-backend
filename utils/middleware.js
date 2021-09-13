@@ -13,8 +13,10 @@ const userExtractor = async (req, res, next) => {
   if (req.token) {
     const verifiedUser = jwt.verify(req.token, process.env.JWT_SECRET);
     req.user = verifiedUser.id && await User.findById(verifiedUser.id);
+    next();
+  } else {
+    res.status(401).send({ error: 'Signup or Login to create a post' });
   }
-  next();
 }
 
 const errorHandler = (err, req, res, next) => {

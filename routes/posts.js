@@ -1,5 +1,6 @@
 const express = require('express');
 const postsController = require('../controllers/posts');
+const middleware = require('../utils/middleware');
 const router = express.Router();
 
 // get all posts
@@ -9,9 +10,9 @@ router.get('/', postsController.getAllPosts);
 router.get('/:id', postsController.getSinglePost);
 
 // create a post
-router.post('/', postsController.createPost);
+router.post('/', middleware.userExtractor, postsController.createPost);
 
 // delete a post
-router.delete('/:id', postsController.deletePost);
+router.delete('/:id', middleware.userExtractor, postsController.deletePost);
 
 module.exports = router;
