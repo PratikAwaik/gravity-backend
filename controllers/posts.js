@@ -1,3 +1,4 @@
+const asyncPkg = require('async');
 const Post = require('../models/post');
 
 const getAllPosts = async (req, res) => {
@@ -35,9 +36,57 @@ const deletePost = async (req, res) => {
   }
 }
 
+const handleUpvotes = async (req, res) => {
+  await handleVotes(req.params.id, req.user, res, true);
+}
+
+const handleDownvotes = async (req, res) => {
+  await handleVotes(req.params.id, req.user, res, false);
+}
+
+const handleVotes = async (id, user, res, upvote) => {
+  const post = await Post.findById(id);
+  let updatedPost;
+  if (upvote) {
+    if (user.postsUpvoted.find(postId => postId.toString() === post.id.toString())) {
+      updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes - 1 }, { new: true });    
+      user.postsUpvoted = user.postsUpvoted.filter(postId => postId.toString() !== updatedPost.id.toString());
+      await user.save();
+      res.json(updatedPost);
+    } else {
+      updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes + 1 }, { new: true });
+      user.postsUpvoted = user.postsUpvoted.concat(updatedPost.id);
+      if (user.postsDownvoted.find(postId => postId.toString() === post.id.toString())) {
+        updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes - 1 }, { new: true });
+        user.postsDownvoted = user.postsDownvoted.filter(postId => postId.toString() !== updatedPost.id);
+      }
+      await user.save();
+      res.json(updatedPost);
+    }
+  } else {
+    if (user.postsDownvoted.find(postId => postId.toString() === post.id.toString())) {
+      updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes - 1 }, { new: true });    
+      user.postsDownvoted = user.postsDownvoted.filter(postId => postId.toString() !== updatedPost.id.toString());
+      await user.save();
+      res.json(updatedPost);
+    } else {
+      updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes + 1 }, { new: true });
+      user.postsDownvoted = user.postsDownvoted.concat(updatedPost.id);
+      if (user.postsUpvoted.find(postId => postId.toString() === post.id.toString())) {
+        updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes - 1 }, { new: true });
+        user.postsUpvoted = user.postsUpvoted.filter(postId => postId.toString() !== updatedPost.id);
+      }
+      await user.save();
+      res.json(updatedPost);
+    }
+  }
+}
+
 module.exports = {
   getAllPosts,
   getSinglePost,
   createPost,
-  deletePost
+  deletePost,
+  handleUpvotes,
+  handleDownvotes
 }
