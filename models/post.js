@@ -5,6 +5,7 @@ const PostSchema = new Schema({
   title: {
     type: String,
     required: true,
+    maxlength: 300
   },
   content: {
     type: String,
