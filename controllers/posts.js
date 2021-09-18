@@ -7,7 +7,7 @@ const getAllPosts = async (req, res) => {
 }
 
 const getSinglePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findById(req.params.id).populate('user');
   res.json(post);
 } 
 
@@ -16,6 +16,7 @@ const createPost = async (req, res) => {
   const newPost = new Post({
     title: body.title,
     content: body.content,
+    type: body.type,
     user: req.user.id
   });
   await newPost.save();
@@ -37,49 +38,35 @@ const deletePost = async (req, res) => {
 }
 
 const handleUpvotes = async (req, res) => {
-  await handleVotes(req.params.id, req.user, res, true);
+  const body = req.body;
+  const id = req.params.id;
+  const updatedPost = await Post.findByIdAndUpdate(id, { upvotes: body.upvotes, downvotes: body.downvotes }, { new: true }).populate('user');
+  if (body.hasUpvotedAlready) {
+    req.user.postsUpvoted = req.user.postsUpvoted.filter(postId => postId.toString() !== id);
+  } else if (body.downvotedThenUpvoted) {
+    req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
+    req.user.postsDownvoted = req.user.postsDownvoted.filter(postId => postId.toString() !== id);
+  } else {
+    req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
+  }
+  await req.user.save();
+  res.json(updatedPost);
 }
 
 const handleDownvotes = async (req, res) => {
-  await handleVotes(req.params.id, req.user, res, false);
-}
-
-const handleVotes = async (id, user, res, upvote) => {
-  const post = await Post.findById(id);
-  let updatedPost;
-  if (upvote) {
-    if (user.postsUpvoted.find(postId => postId.toString() === post.id.toString())) {
-      updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes - 1 }, { new: true });    
-      user.postsUpvoted = user.postsUpvoted.filter(postId => postId.toString() !== updatedPost.id.toString());
-      await user.save();
-      res.json(updatedPost);
-    } else {
-      updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes + 1 }, { new: true });
-      user.postsUpvoted = user.postsUpvoted.concat(updatedPost.id);
-      if (user.postsDownvoted.find(postId => postId.toString() === post.id.toString())) {
-        updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes - 1 }, { new: true });
-        user.postsDownvoted = user.postsDownvoted.filter(postId => postId.toString() !== updatedPost.id);
-      }
-      await user.save();
-      res.json(updatedPost);
-    }
+  const body = req.body;
+  const id = req.params.id;
+  const updatedPost = await Post.findByIdAndUpdate(id, { upvotes: body.upvotes, downvotes: body.downvotes }, { new: true }).populate('user');
+  if (body.hasDownvotedAlready) {
+    req.user.postsDownvoted = req.user.postsDownvoted.filter(postId => postId.toString() !== id);
+  } else if (body.upvotedThenDownvoted) {
+    req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
+    req.user.postsUpvoted = req.user.postsUpvoted.filter(postId => postId.toString() !== id);
   } else {
-    if (user.postsDownvoted.find(postId => postId.toString() === post.id.toString())) {
-      updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes - 1 }, { new: true });    
-      user.postsDownvoted = user.postsDownvoted.filter(postId => postId.toString() !== updatedPost.id.toString());
-      await user.save();
-      res.json(updatedPost);
-    } else {
-      updatedPost = await Post.findByIdAndUpdate(post.id, { downvotes: post.downvotes + 1 }, { new: true });
-      user.postsDownvoted = user.postsDownvoted.concat(updatedPost.id);
-      if (user.postsUpvoted.find(postId => postId.toString() === post.id.toString())) {
-        updatedPost = await Post.findByIdAndUpdate(post.id, { upvotes: post.upvotes - 1 }, { new: true });
-        user.postsUpvoted = user.postsUpvoted.filter(postId => postId.toString() !== updatedPost.id);
-      }
-      await user.save();
-      res.json(updatedPost);
-    }
+    req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
   }
+  await req.user.save();
+  res.json(updatedPost);
 }
 
 module.exports = {
