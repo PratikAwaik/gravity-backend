@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
@@ -8,6 +9,10 @@ const PostSchema = new Schema({
     maxlength: 300
   },
   content: {
+    type: String,
+    required: true
+  },
+  type: {
     type: String,
     required: true
   },
@@ -25,7 +30,7 @@ const PostSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: new Date()
+    default: moment()
   },
   editedAt: {
     type: Date,
