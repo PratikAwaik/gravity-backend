@@ -1,4 +1,3 @@
-const asyncPkg = require('async');
 const Post = require('../models/post');
 
 const getAllPosts = async (req, res) => {
@@ -43,7 +42,7 @@ const handleUpvotes = async (req, res) => {
   const updatedPost = await Post.findByIdAndUpdate(id, { upvotes: body.upvotes, downvotes: body.downvotes }, { new: true }).populate('user');
   if (body.hasUpvotedAlready) {
     req.user.postsUpvoted = req.user.postsUpvoted.filter(postId => postId.toString() !== id);
-  } else if (body.downvotedThenUpvoted) {
+  } else if (body.hasDownvotedAlready) {
     req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
     req.user.postsDownvoted = req.user.postsDownvoted.filter(postId => postId.toString() !== id);
   } else {
@@ -59,7 +58,7 @@ const handleDownvotes = async (req, res) => {
   const updatedPost = await Post.findByIdAndUpdate(id, { upvotes: body.upvotes, downvotes: body.downvotes }, { new: true }).populate('user');
   if (body.hasDownvotedAlready) {
     req.user.postsDownvoted = req.user.postsDownvoted.filter(postId => postId.toString() !== id);
-  } else if (body.upvotedThenDownvoted) {
+  } else if (body.hasUpvotedAlready) {
     req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
     req.user.postsUpvoted = req.user.postsUpvoted.filter(postId => postId.toString() !== id);
   } else {
