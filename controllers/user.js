@@ -25,11 +25,6 @@ const registerUser = async (req, res) => {
   const userForToken = {
     username: newUser.username,
     id: newUser.id,
-    email: newUser.email,
-    createdAt: newUser.createdAt,
-    posts: newUser.posts,
-    postsUpvoted: newUser.postsUpvoted,
-    postsDownvoted: newUser.postsDownvoted
   }
   const token = jwt.sign(userForToken, process.env.JWT_SECRET);
   res.json({ token, ...userForToken });
@@ -46,11 +41,6 @@ const loginUser = async (req, res) => {
   const userForToken = {
     username: user.username,
     id: user.id,
-    email: user.email,
-    createdAt: user.createdAt,
-    posts: user.posts,
-    postsUpvoted: user.postsUpvoted,
-    postsDownvoted: user.postsDownvoted
   }
   const token = jwt.sign(userForToken, process.env.JWT_SECRET);
   res.json({ token, ...userForToken });
