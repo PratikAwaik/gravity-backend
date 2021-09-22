@@ -29,6 +29,8 @@ const deletePost = async (req, res) => {
   if (post.user.toString() === req.user.id.toString()) {
     await Post.findByIdAndDelete(req.params.id);
     req.user.posts = req.user.posts.filter(postId => postId.toString() !== post.id.toString());
+    req.user.postsUpvoted = req.user.postsUpvoted.filter(postId => postId.toString() !== post.id.toString());
+    req.user.postsDownvoted = req.user.postsDownvoted.filter(postId => postId.toString() !== post.id.toString());
     await req.user.save();
     res.status(204).end();
   } else {
