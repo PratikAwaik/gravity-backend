@@ -16,7 +16,8 @@ const createPost = async (req, res) => {
     title: body.title,
     content: body.content,
     type: body.type,
-    user: req.user.id
+    user: req.user.id,
+    createdAt: Date.now()
   });
   await newPost.save();
   req.user.posts = req.user.posts.concat(newPost);

@@ -18,7 +18,8 @@ const registerUser = async (req, res) => {
   const newUser = new User({
     username: body.username,
     email: body.email,
-    passwordHash
+    passwordHash,
+    createdAt: Date.now()
   }); 
   await newUser.save();
 
