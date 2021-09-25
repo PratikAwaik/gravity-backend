@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
-const moment = require('moment');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -23,7 +22,6 @@ const UserSchema = new Schema({
   },
   createdAt: {
     type: Date, 
-    default: moment()
   },
   posts: [
     {

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
@@ -30,7 +29,6 @@ const PostSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: moment()
   },
   editedAt: {
     type: Date,
