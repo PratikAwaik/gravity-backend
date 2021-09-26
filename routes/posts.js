@@ -29,4 +29,7 @@ router.patch(
   postsController.handleDownvotes
 );
 
+// edit post
+router.put("/:id/edit", middleware.userExtractor, postsController.editPost);
+
 module.exports = router;
