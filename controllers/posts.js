@@ -47,6 +47,24 @@ const deletePost = async (req, res) => {
   }
 };
 
+const editPost = async (req, res) => {
+  const id = req.params.id;
+  const post = await Post.findById(id);
+  if (post.user.toString() === req.user.id.toString()) {
+    const body = req.body;
+    const newPost = {
+      ...body,
+      editedAt: Date.now(),
+    };
+    const editedPost = await Post.findByIdAndUpdate(id, newPost, {
+      new: true,
+    }).populate("user");
+    res.json(editedPost);
+  } else {
+    res.status(401).send({ error: "You are not authorized to edit the post" });
+  }
+};
+
 const handleUpvotes = async (req, res) => {
   const body = req.body;
   const id = req.params.id;
@@ -100,6 +118,7 @@ module.exports = {
   getSinglePost,
   createPost,
   deletePost,
+  editPost,
   handleUpvotes,
   handleDownvotes,
 };
