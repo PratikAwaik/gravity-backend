@@ -30,6 +30,6 @@ router.patch(
 );
 
 // edit post
-router.put("/:id/edit", middleware.userExtractor, postsController.editPost);
+router.patch("/:id/edit", middleware.userExtractor, postsController.editPost);
 
 module.exports = router;
