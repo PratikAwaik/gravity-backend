@@ -52,11 +52,11 @@ const editPost = async (req, res) => {
   const post = await Post.findById(id);
   if (post.user.toString() === req.user.id.toString()) {
     const body = req.body;
-    const newPost = {
+    const data = {
       ...body,
       editedAt: Date.now(),
     };
-    const editedPost = await Post.findByIdAndUpdate(id, newPost, {
+    const editedPost = await Post.findByIdAndUpdate(id, data, {
       new: true,
     }).populate("user");
     res.json(editedPost);
