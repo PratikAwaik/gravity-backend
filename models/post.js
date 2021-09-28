@@ -34,6 +34,12 @@ const PostSchema = new Schema({
     type: Date,
     default: null,
   },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 });
 
 PostSchema.set("toJSON", {
