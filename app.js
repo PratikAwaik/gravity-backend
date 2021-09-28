@@ -12,6 +12,7 @@ const config = require("./utils/config");
 /* import routes */
 const userRouter = require("./routes/user");
 const postsRouter = require("./routes/posts");
+const commentsRouter = require("./routes/comments");
 
 // connect to database
 mongoose
@@ -35,6 +36,7 @@ app.use(middleware.tokenExtractor);
 /* register routes */
 app.use("/api/users", userRouter);
 app.use("/api/forums", postsRouter);
+app.use("/api/forums/:id/comments", commentsRouter);
 
 /* error handler middlewares */
 app.use(middleware.errorHandler);
