@@ -31,14 +31,32 @@ const UserSchema = new Schema({
   ],
   postsUpvoted: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "Post",
     },
   ],
   postsDownvoted: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "Post",
+    },
+  ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
+  commentsUpvoted: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
+  commentsDownvoted: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
     },
   ],
 });
