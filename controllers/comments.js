@@ -17,11 +17,13 @@ const createComment = async (req, res) => {
     content: body.content,
     post: mongoose.Types.ObjectId(postId),
     user: req.user.id,
-    repliedTo: body.commentId ? body.commentId : null,
+    repliedTo: body.repliedTo ? body.repliedTo : null,
     createdAt: Date.now(),
   });
   await newComment.save();
-  const populatedComment = await newComment.populate("user");
+  const populatedComment = await newComment
+    .populate("user")
+    .populate("repliedTo");
 
   const post = await Post.findById(postId);
   post.comments = post.comments.concat(newComment);
