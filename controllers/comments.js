@@ -21,9 +21,7 @@ const createComment = async (req, res) => {
     createdAt: Date.now(),
   });
   await newComment.save();
-  const populatedComment = await newComment
-    .populate("user")
-    .populate("repliedTo");
+  const populatedComment = await newComment.populate("user");
 
   const post = await Post.findById(postId);
   post.comments = post.comments.concat(newComment);
