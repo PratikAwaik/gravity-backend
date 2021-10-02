@@ -22,8 +22,6 @@ const createPost = async (req, res) => {
     createdAt: Date.now(),
   });
   await newPost.save();
-  req.user.posts = req.user.posts.concat(newPost);
-  await req.user.save();
   res.json(newPost);
 };
 
@@ -31,16 +29,6 @@ const deletePost = async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (post.user.toString() === req.user.id.toString()) {
     await Post.findByIdAndDelete(req.params.id);
-    req.user.posts = req.user.posts.filter(
-      (postId) => postId.toString() !== post.id.toString()
-    );
-    req.user.postsUpvoted = req.user.postsUpvoted.filter(
-      (postId) => postId.toString() !== post.id.toString()
-    );
-    req.user.postsDownvoted = req.user.postsDownvoted.filter(
-      (postId) => postId.toString() !== post.id.toString()
-    );
-    await req.user.save();
     res.status(204).end();
   } else {
     res
