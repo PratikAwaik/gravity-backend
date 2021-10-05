@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const Comment = require("./comment");
-const User = require("./user");
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
@@ -53,17 +51,20 @@ PostSchema.set("toJSON", {
 });
 
 PostSchema.post("save", async function (doc) {
+  const User = this.model("User");
   const user = await User.findById(doc.user);
   await User.findByIdAndUpdate(doc.user, { posts: user.posts.concat(doc._id) });
 });
 
 PostSchema.post("findOneAndDelete", async function (doc) {
+  const Comment = doc.model("Comment");
+  const User = doc.model("User");
   await Comment.deleteMany({ post: doc._id });
-  const updatedUser = await updateUser(doc.user, doc._id, doc.comments);
+  const updatedUser = await updateUser(User, doc.user, doc._id, doc.comments);
   await User.findByIdAndUpdate(doc.user, updatedUser);
 });
 
-async function updateUser(userId, postId, postComments) {
+async function updateUser(User, userId, postId, postComments) {
   const user = await User.findById(userId);
   return {
     posts: user.posts.filter((post) => post.toString() !== postId.toString()),

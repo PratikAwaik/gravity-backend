@@ -43,4 +43,36 @@ CommentSchema.set("toJSON", {
   },
 });
 
+CommentSchema.post("save", async function (doc) {
+  const Post = this.model("Post");
+  const User = this.model("User");
+  // save comment in post
+  const post = await Post.findById(doc.post);
+  post.comments = post.comments.concat(doc._id);
+  await post.save();
+
+  // save comment in user
+  const user = await User.findById(doc.user);
+  user.comments = user.comments.concat(doc._id);
+  await user.save();
+});
+
+CommentSchema.post("findOneAndDelete", async function (doc) {
+  const Post = doc.model("Post");
+  const User = doc.model("User");
+  // remove comment from post
+  const post = await Post.findById(doc.post);
+  post.comments = post.comments.filter(
+    (comment) => comment.toString() !== doc.id.toString()
+  );
+  await post.save();
+
+  // remove comment from user
+  const user = await User.findById(doc.user);
+  user.comments = user.comments.filter(
+    (comment) => comment.toString() !== doc.id.toString()
+  );
+  await user.save();
+});
+
 module.exports = mongoose.model("Comment", CommentSchema);
