@@ -27,6 +27,9 @@ const CommentSchema = new Schema({
     type: Number,
     default: 0,
   },
+  level: {
+    type: Number,
+  },
   createdAt: {
     type: Date,
   },
