@@ -4,9 +4,7 @@ const Post = require("../models/post");
 
 const getAllComments = async (req, res) => {
   const postId = req.params.id;
-  const comments = await Comment.find({ post: postId })
-    .populate("user")
-    .populate("repliedTo");
+  const comments = await Comment.find({ post: postId }).populate("user");
   res.json(comments);
 };
 
@@ -18,17 +16,12 @@ const createComment = async (req, res) => {
     post: mongoose.Types.ObjectId(postId),
     user: req.user.id,
     repliedTo: body.repliedTo ? body.repliedTo : null,
+    level: body.level,
     createdAt: Date.now(),
   });
   await newComment.save();
   const populatedComment = await newComment.populate("user");
 
-  // const post = await Post.findById(postId);
-  // post.comments = post.comments.concat(newComment);
-  // await post.save();
-
-  // req.user.comments = req.user.comments.concat(newComment.id);
-  // req.user.save();
   res.json(populatedComment);
 };
 
