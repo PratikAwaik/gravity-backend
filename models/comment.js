@@ -56,11 +56,12 @@ CommentSchema.post("save", async function (doc) {
 
   // save comment in user
   const user = await User.findById(doc.user);
-  user.comments = user.comments.concat(doc._id);
-  await user.save();
+  await User.findByIdAndUpdate(doc.user, {
+    comments: user.comments.concat(doc._id),
+  });
 });
 
-CommentSchema.post("findOneAndDelete", async function (doc) {
+CommentSchema.post("remove", async function (doc) {
   const Post = doc.model("Post");
   const User = doc.model("User");
   // remove comment from post
@@ -72,10 +73,10 @@ CommentSchema.post("findOneAndDelete", async function (doc) {
 
   // remove comment from user
   const user = await User.findById(doc.user);
-  user.comments = user.comments.filter(
+  const comments = user.comments.filter(
     (comment) => comment.toString() !== doc.id.toString()
   );
-  await user.save();
+  await User.findByIdAndUpdate(doc.user, { comments });
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);

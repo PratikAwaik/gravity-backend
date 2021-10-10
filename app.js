@@ -11,6 +11,7 @@ const config = require("./utils/config");
 
 /* import routes */
 const userRouter = require("./routes/user");
+const subredditsRouter = require("./routes/subreddit");
 const postsRouter = require("./routes/posts");
 const commentsRouter = require("./routes/comments");
 
@@ -35,6 +36,7 @@ app.use(middleware.tokenExtractor);
 
 /* register routes */
 app.use("/api/users", userRouter);
+app.use("/api/r", subredditsRouter);
 app.use("/api/forums", postsRouter);
 app.use("/api/forums/:id/comments", commentsRouter);
 

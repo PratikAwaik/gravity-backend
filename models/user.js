@@ -23,6 +23,12 @@ const UserSchema = new Schema({
   createdAt: {
     type: Date,
   },
+  subscriptions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Subreddit",
+    },
+  ],
   posts: [
     {
       type: Schema.Types.ObjectId,

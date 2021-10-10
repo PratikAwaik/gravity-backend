@@ -22,6 +22,15 @@ const createComment = async (req, res) => {
   await newComment.save();
   const populatedComment = await newComment.populate("user");
 
+  // save comment in post
+  const post = Post.findById(postId);
+  post.comments = post.comments.conact(newComment);
+  await post.save();
+
+  // save comment in user
+  req.user.comments = req.user.comments.concat(newComment.id);
+  await req.user.save();
+
   res.json(populatedComment);
 };
 
