@@ -46,37 +46,37 @@ CommentSchema.set("toJSON", {
   },
 });
 
-CommentSchema.post("save", async function (doc) {
-  const Post = this.model("Post");
-  const User = this.model("User");
-  // save comment in post
-  const post = await Post.findById(doc.post);
-  post.comments = post.comments.concat(doc._id);
-  await post.save();
+// CommentSchema.post("save", async function (doc) {
+//   const Post = this.model("Post");
+//   const User = this.model("User");
+//   // save comment in post
+//   const post = await Post.findById(doc.post);
+//   post.comments = post.comments.concat(doc._id);
+//   await post.save();
 
-  // save comment in user
-  const user = await User.findById(doc.user);
-  await User.findByIdAndUpdate(doc.user, {
-    comments: user.comments.concat(doc._id),
-  });
-});
+//   // save comment in user
+//   const user = await User.findById(doc.user);
+//   await User.findByIdAndUpdate(doc.user, {
+//     comments: user.comments.concat(doc._id),
+//   });
+// });
 
-CommentSchema.post("remove", async function (doc) {
-  const Post = doc.model("Post");
-  const User = doc.model("User");
-  // remove comment from post
-  const post = await Post.findById(doc.post);
-  post.comments = post.comments.filter(
-    (comment) => comment.toString() !== doc.id.toString()
-  );
-  await post.save();
+// CommentSchema.post("remove", async function (doc) {
+//   const Post = doc.model("Post");
+//   const User = doc.model("User");
+//   // remove comment from post
+//   const post = await Post.findById(doc.post);
+//   post.comments = post.comments.filter(
+//     (comment) => comment.toString() !== doc.id.toString()
+//   );
+//   await post.save();
 
-  // remove comment from user
-  const user = await User.findById(doc.user);
-  const comments = user.comments.filter(
-    (comment) => comment.toString() !== doc.id.toString()
-  );
-  await User.findByIdAndUpdate(doc.user, { comments });
-});
+//   // remove comment from user
+//   const user = await User.findById(doc.user);
+//   const comments = user.comments.filter(
+//     (comment) => comment.toString() !== doc.id.toString()
+//   );
+//   await User.findByIdAndUpdate(doc.user, { comments });
+// });
 
 module.exports = mongoose.model("Comment", CommentSchema);

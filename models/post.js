@@ -50,4 +50,23 @@ PostSchema.set("toJSON", {
   },
 });
 
+PostSchema.post("save", async function (doc) {
+  // add post in user.posts
+  const User = this.model("User");
+  const postUser = await User.findById(doc.user);
+  postUser.posts = postUser.posts.concat(doc._id);
+  await postUser.save();
+
+  // add post in subreddit
+  // const Subreddit = this.model("Subreddit");
+  // const postSubreddit = await Subreddit.findById(doc.subreddit);
+  // postSubreddit.posts = postSubreddit.posts.concat(doc._id);
+  // await postSubreddit.save();
+});
+
+PostSchema.post("findOneAndDelete", async function (doc) {
+  // cleanUp here
+  // TODO: add usersUpvoted in Post model
+});
+
 module.exports = mongoose.model("Post", PostSchema);
