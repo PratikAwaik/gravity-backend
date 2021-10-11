@@ -1,7 +1,4 @@
 const Post = require("../models/post");
-const Comment = require("../models/comment");
-const User = require("../models/user");
-const Subreddit = require("../models/subreddit");
 
 const getAllPosts = async (req, res) => {
   const posts = await Post.find({}).populate("user").populate("comments");
@@ -33,53 +30,9 @@ const createPost = async (req, res) => {
   res.json(newPost);
 };
 
-const removeCommentsFromUser = async (post) => {
-  for (const commentId of post.comments) {
-    const comment = await Comment.findByIdAndDelete(commentId);
-    const user = await User.findById(comment.user);
-    user.comments = user.comments.filter(
-      (userCommentId) => userCommentId.toString() !== commentId.toString()
-    );
-    user.commentsUpvoted = user.commentsUpvoted.filter(
-      (userCommentId) => userCommentId.toString() !== commentId
-    );
-    user.commentsDownvoted = user.commentsDownvoted.filter(
-      (userCommentId) => userCommentId.toString() !== commentId.toString()
-    );
-    await user.save();
-  }
-};
-
-const cleanUpAfterDelete = async (user, post) => {
-  user.posts = user.posts.filter(
-    (postId) => postId.toString() !== post.id.toString()
-  );
-
-  // remove post from user.postsUpvoted
-  user.postsUpvoted = user.postsUpvoted.filter(
-    (postId) => postId.toString() !== post.id.toString()
-  );
-
-  // remove post from user.postsDownvoted
-  user.postsDownvoted = user.postsDownvoted.filter(
-    (postId) => postId.toString() !== post.id.toString()
-  );
-  await user.save();
-
-  // remove post from subreddit
-  // const subreddit = await Subreddit.findById(post.subreddit);
-  // subreddit.posts = subreddit.posts.filter(
-  //   (postId) => postId.toString() !== post.id.toString()
-  // );
-  // await subreddit.save();
-
-  await removeCommentsFromUser(post);
-};
-
 const deletePost = async (req, res) => {
   const post = await Post.findByIdAndDelete(req.params.id);
   if (post.user.toString() === req.user.id.toString()) {
-    await cleanUpAfterDelete(req.user, post);
     res.status(204).end();
   } else {
     res

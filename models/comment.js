@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const helpers = require("../utils/helpers");
 const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
@@ -46,37 +47,46 @@ CommentSchema.set("toJSON", {
   },
 });
 
-// CommentSchema.post("save", async function (doc) {
-//   const Post = this.model("Post");
-//   const User = this.model("User");
-//   // save comment in post
-//   const post = await Post.findById(doc.post);
-//   post.comments = post.comments.concat(doc._id);
-//   await post.save();
+CommentSchema.post("save", async function (doc) {
+  const Post = this.model("Post");
+  const User = this.model("User");
+  // save comment in post
+  const post = await Post.findById(doc.post);
+  await Post.findByIdAndUpdate(doc.post, {
+    comments: post.comments.concat(doc._id),
+  });
 
-//   // save comment in user
-//   const user = await User.findById(doc.user);
-//   await User.findByIdAndUpdate(doc.user, {
-//     comments: user.comments.concat(doc._id),
-//   });
-// });
+  // save comment in user
+  const user = await User.findById(doc.user);
+  await User.findByIdAndUpdate(doc.user, {
+    comments: user.comments.concat(doc._id),
+  });
+});
 
-// CommentSchema.post("remove", async function (doc) {
-//   const Post = doc.model("Post");
-//   const User = doc.model("User");
-//   // remove comment from post
-//   const post = await Post.findById(doc.post);
-//   post.comments = post.comments.filter(
-//     (comment) => comment.toString() !== doc.id.toString()
-//   );
-//   await post.save();
+CommentSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    const Post = doc.model("Post");
+    const User = doc.model("User");
+    // remove comment from post
+    // will be used when a single comment is deleted
+    // const post = await Post.findById(doc.post);
+    // post.comments = helpers.filteredArray(post.comments, doc._id);
+    // await post.save();
 
-//   // remove comment from user
-//   const user = await User.findById(doc.user);
-//   const comments = user.comments.filter(
-//     (comment) => comment.toString() !== doc.id.toString()
-//   );
-//   await User.findByIdAndUpdate(doc.user, { comments });
-// });
+    // remove comment from user
+    const user = await User.findById(doc.user);
+    user.comments = helpers.filteredArray(user.comments, doc._id);
+    user.commentsUpvoted = helpers.filteredArray(user.commentsUpvoted, doc._id);
+    user.commentsDownvoted = helpers.filteredArray(
+      user.commentsDownvoted,
+      doc._id
+    );
+    await User.findByIdAndUpdate(doc.user, {
+      comments: user.comments,
+      commentsUpvoted: user.commentsUpvoted,
+      commentsDownvoted: user.commentsDownvoted,
+    });
+  }
+});
 
 module.exports = mongoose.model("Comment", CommentSchema);
