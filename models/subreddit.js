@@ -45,6 +45,14 @@ const SubredditSchema = new Schema({
 
 SubredditSchema.plugin(uniqueValidator);
 
+SubredditSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
+
 SubredditSchema.post("save", async function (doc) {
   const User = this.model("User");
   const user = await User.findById(doc.members[0]);
