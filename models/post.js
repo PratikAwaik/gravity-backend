@@ -59,10 +59,12 @@ PostSchema.post("save", async function (doc) {
   await User.findByIdAndUpdate(doc.user, { posts: postUser.posts });
 
   // add post in subreddit
-  // const Subreddit = this.model("Subreddit");
-  // const postSubreddit = await Subreddit.findById(doc.subreddit);
-  // postSubreddit.posts = postSubreddit.posts.concat(doc._id);
-  // await Subreddit.findByIdAndUpdate(doc.subreddit, { posts: postSubreddit.posts });
+  const Subreddit = this.model("Subreddit");
+  const postSubreddit = await Subreddit.findById(doc.subreddit);
+  postSubreddit.posts = postSubreddit.posts.concat(doc._id);
+  await Subreddit.findByIdAndUpdate(doc.subreddit, {
+    posts: postSubreddit.posts,
+  });
 });
 
 PostSchema.post("findOneAndDelete", async function (doc) {

@@ -23,10 +23,6 @@ const createPost = async (req, res) => {
   });
   await newPost.save();
 
-  // save newly added post in user.posts
-  // req.user.posts = req.user.posts.concat(newPost.id);
-  // await req.user.save();
-
   res.json(newPost);
 };
 
