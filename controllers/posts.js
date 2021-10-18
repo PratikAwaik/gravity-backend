@@ -1,14 +1,18 @@
 const Post = require("../models/post");
 
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find({}).populate("user").populate("comments");
+  const posts = await Post.find({})
+    .populate("user")
+    .populate("comments")
+    .populate("subreddit");
   res.json(posts);
 };
 
 const getSinglePost = async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("user")
-    .populate("comments");
+    .populate("comments")
+    .populate("subreddit");
   res.json(post);
 };
 
@@ -17,7 +21,7 @@ const createPost = async (req, res) => {
   const newPost = new Post({
     title: body.title,
     content: body.content,
-    type: body.type,
+    subreddit: body.subreddit,
     user: req.user.id,
     createdAt: Date.now(),
   });
@@ -50,7 +54,8 @@ const editPost = async (req, res) => {
       new: true,
     })
       .populate("user")
-      .populate("comments");
+      .populate("comments")
+      .populate("subreddit");
     res.json(editedPost);
   } else {
     res.status(401).send({ error: "You are not authorized to edit the post" });
@@ -66,7 +71,8 @@ const handleUpvotes = async (req, res) => {
     { new: true }
   )
     .populate("user")
-    .populate("comments");
+    .populate("comments")
+    .populate("subreddit");
   if (body.hasUpvotedAlready) {
     req.user.postsUpvoted = req.user.postsUpvoted.filter(
       (postId) => postId.toString() !== id
@@ -93,7 +99,8 @@ const handleDownvotes = async (req, res) => {
     { new: true }
   )
     .populate("user")
-    .populate("comments");
+    .populate("comments")
+    .populate("subreddit");
   if (body.hasDownvotedAlready) {
     req.user.postsDownvoted = req.user.postsDownvoted.filter(
       (postId) => postId.toString() !== id
