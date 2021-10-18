@@ -5,10 +5,16 @@ const getAllSubreddits = async (req, res) => {
   res.json(subreddits);
 };
 
+const getSingleSubreddit = async (req, res) => {
+  const subreddit = await Subreddit.findById(req.params.id);
+  res.json(subreddit);
+};
+
 const createSubreddit = async (req, res) => {
   const body = req.body;
   const newSubreddit = new Subreddit({
     ...body,
+    name: "r/" + body.name,
     members: [req.user.id],
     moderators: [req.user.id],
   });
@@ -19,5 +25,6 @@ const createSubreddit = async (req, res) => {
 
 module.exports = {
   getAllSubreddits,
+  getSingleSubreddit,
   createSubreddit,
 };
