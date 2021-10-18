@@ -79,9 +79,9 @@ PostSchema.post("findOneAndDelete", async function (doc) {
   await removePostFromUsers(doc, User);
 
   // remove post from subreddit
-  // const subreddit = await Subreddit.findById(doc.subreddit);
-  // subreddit.posts = helpers.filteredArray(subreddit.posts, doc._id);
-  // await Subreddit.findByIdAndUpdate(doc.subreddit, { posts: subreddit.posts });
+  const subreddit = await Subreddit.findById(doc.subreddit);
+  subreddit.posts = helpers.filteredArray(subreddit.posts, doc._id);
+  await Subreddit.findByIdAndUpdate(doc.subreddit, { posts: subreddit.posts });
 });
 
 async function removeCommentsFromUser(post, User, Comment) {
