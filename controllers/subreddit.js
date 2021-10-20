@@ -15,6 +15,7 @@ const createSubreddit = async (req, res) => {
   const newSubreddit = new Subreddit({
     ...body,
     name: "r/" + body.name,
+    communityIcon: body.image,
     members: [req.user.id],
     moderators: [req.user.id],
   });

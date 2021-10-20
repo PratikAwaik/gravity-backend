@@ -13,7 +13,7 @@ const SubredditSchema = new Schema({
     type: String,
     required: true,
   },
-  pfp: {
+  communityIcon: {
     type: String,
   },
   posts: [
