@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
   const body = req.body;
   const passwordHash = await bcrypt.hash(body.password, 10);
   const newUser = new User({
-    username: body.username,
+    username: "u/" + body.username,
     email: body.email,
     passwordHash,
     createdAt: Date.now(),
