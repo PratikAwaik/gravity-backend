@@ -3,12 +3,30 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({}).populate([
+    "subscriptions",
+    "moderating",
+    "posts",
+    "comments",
+    "postsUpvoted",
+    "postsDownvoted",
+    "commentsUpvoted",
+    "commentsDownvoted",
+  ]);
   res.json(users);
 };
 
 const getSingleUser = async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate([
+    "subscriptions",
+    "moderating",
+    "posts",
+    "comments",
+    "postsUpvoted",
+    "postsDownvoted",
+    "commentsUpvoted",
+    "commentsDownvoted",
+  ]);
   res.json(user);
 };
 
@@ -16,8 +34,9 @@ const registerUser = async (req, res) => {
   const body = req.body;
   const passwordHash = await bcrypt.hash(body.password, 10);
   const newUser = new User({
-    username: "u/" + body.username,
+    username: body.username,
     email: body.email,
+    profilePic: body.profilePic,
     passwordHash,
     createdAt: Date.now(),
   });
