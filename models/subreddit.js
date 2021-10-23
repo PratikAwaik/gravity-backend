@@ -34,6 +34,9 @@ const SubredditSchema = new Schema({
       ref: "User",
     },
   ],
+  coverColor: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
@@ -57,6 +60,7 @@ SubredditSchema.post("save", async function (doc) {
   const User = this.model("User");
   const user = await User.findById(doc.members[0]);
   await User.findByIdAndUpdate(user.id, {
+    moderating: user.moderating.concat(doc._id),
     subscriptions: user.subscriptions.concat(doc._id),
   });
 });
