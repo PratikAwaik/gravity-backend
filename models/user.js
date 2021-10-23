@@ -20,10 +20,19 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  profilePic: {
+    type: String,
+  },
   createdAt: {
     type: Date,
   },
   subscriptions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Subreddit",
+    },
+  ],
+  moderating: [
     {
       type: Schema.Types.ObjectId,
       ref: "Subreddit",
