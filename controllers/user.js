@@ -17,16 +17,43 @@ const getAllUsers = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-  const user = await User.findById(req.params.id).populate([
-    "subscriptions",
-    "moderating",
-    "posts",
-    "comments",
-    "postsUpvoted",
-    "postsDownvoted",
-    "commentsUpvoted",
-    "commentsDownvoted",
-  ]);
+  const user = await User.findById(req.params.id)
+    .populate([
+      "subscriptions",
+      "moderating",
+      "postsUpvoted",
+      "postsDownvoted",
+      "commentsUpvoted",
+      "commentsDownvoted",
+    ])
+    .populate({
+      path: "posts",
+      populate: {
+        path: "user",
+        model: "User",
+      },
+    })
+    .populate({
+      path: "posts",
+      populate: {
+        path: "subreddit",
+        model: "Subreddit",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "post",
+        model: "Post",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        model: "User",
+      },
+    });
   res.json(user);
 };
 
@@ -68,9 +95,53 @@ const loginUser = async (req, res) => {
   res.json({ token, ...userForToken });
 };
 
+const updateUser = async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  })
+    .populate([
+      "subscriptions",
+      "moderating",
+      "postsUpvoted",
+      "postsDownvoted",
+      "commentsUpvoted",
+      "commentsDownvoted",
+    ])
+    .populate({
+      path: "posts",
+      populate: {
+        path: "user",
+        model: "User",
+      },
+    })
+    .populate({
+      path: "posts",
+      populate: {
+        path: "subreddit",
+        model: "Subreddit",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "post",
+        model: "Post",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        model: "User",
+      },
+    });
+  res.json(user);
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
   registerUser,
   loginUser,
+  updateUser,
 };
