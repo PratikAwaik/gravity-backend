@@ -50,13 +50,10 @@ const editPost = async (req, res) => {
       ...body,
       editedAt: Date.now(),
     };
-    const editedPost = await Post.findByIdAndUpdate(id, data, {
+    await Post.findByIdAndUpdate(id, data, {
       new: true,
-    })
-      .populate("user")
-      .populate("comments")
-      .populate("subreddit");
-    res.json(editedPost);
+    });
+    res.status(200).end();
   } else {
     res.status(401).send({ error: "You are not authorized to edit the post" });
   }
@@ -69,10 +66,7 @@ const handleUpvotes = async (req, res) => {
     id,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
-  )
-    .populate("user")
-    .populate("comments")
-    .populate("subreddit");
+  );
   if (body.hasUpvotedAlready) {
     req.user.postsUpvoted = req.user.postsUpvoted.filter(
       (postId) => postId.toString() !== id
@@ -87,7 +81,7 @@ const handleUpvotes = async (req, res) => {
   }
 
   await req.user.save();
-  res.json(updatedPost);
+  res.status(200).end();
 };
 
 const handleDownvotes = async (req, res) => {
@@ -97,10 +91,7 @@ const handleDownvotes = async (req, res) => {
     id,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
-  )
-    .populate("user")
-    .populate("comments")
-    .populate("subreddit");
+  );
   if (body.hasDownvotedAlready) {
     req.user.postsDownvoted = req.user.postsDownvoted.filter(
       (postId) => postId.toString() !== id
@@ -114,7 +105,7 @@ const handleDownvotes = async (req, res) => {
     req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
   }
   await req.user.save();
-  res.json(updatedPost);
+  res.status(200).end();
 };
 
 module.exports = {
