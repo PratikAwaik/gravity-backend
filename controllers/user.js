@@ -3,29 +3,25 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find({}).populate([
-    "subscriptions",
-    "moderating",
-    "posts",
-    "comments",
-    "postsUpvoted",
-    "postsDownvoted",
-    "commentsUpvoted",
-    "commentsDownvoted",
-  ]);
+  const users = await User.find({});
   res.json(users);
 };
 
 const getSingleUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.json(user);
+};
+
+const getSubreddits = async (req, res) => {
+  const user = await User.findById(req.params.id).populate([
+    "subscriptions",
+    "moderating",
+  ]);
+  res.json({ subscriptions: user.subscriptions, moderating: user.moderating });
+};
+
+const getPosts = async (req, res) => {
   const user = await User.findById(req.params.id)
-    .populate([
-      "subscriptions",
-      "moderating",
-      "postsUpvoted",
-      "postsDownvoted",
-      "commentsUpvoted",
-      "commentsDownvoted",
-    ])
     .populate({
       path: "posts",
       populate: {
@@ -39,22 +35,19 @@ const getSingleUser = async (req, res) => {
         path: "subreddit",
         model: "Subreddit",
       },
-    })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "post",
-        model: "Post",
-      },
-    })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "user",
-        model: "User",
-      },
     });
-  res.json(user);
+  res.json(user.posts);
+};
+
+const getComments = async (req, res) => {
+  const user = await User.findById(req.params.id).populate({
+    path: "comments",
+    populate: {
+      path: "user",
+      model: "User",
+    },
+  });
+  res.json(user.comments);
 };
 
 const registerUser = async (req, res) => {
@@ -98,49 +91,16 @@ const loginUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-  })
-    .populate([
-      "subscriptions",
-      "moderating",
-      "postsUpvoted",
-      "postsDownvoted",
-      "commentsUpvoted",
-      "commentsDownvoted",
-    ])
-    .populate({
-      path: "posts",
-      populate: {
-        path: "user",
-        model: "User",
-      },
-    })
-    .populate({
-      path: "posts",
-      populate: {
-        path: "subreddit",
-        model: "Subreddit",
-      },
-    })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "post",
-        model: "Post",
-      },
-    })
-    .populate({
-      path: "comments",
-      populate: {
-        path: "user",
-        model: "User",
-      },
-    });
+  });
   res.json(user);
 };
 
 module.exports = {
   getAllUsers,
   getSingleUser,
+  getSubreddits,
+  getPosts,
+  getComments,
   registerUser,
   loginUser,
   updateUser,
