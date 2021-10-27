@@ -43,13 +43,13 @@ const upvoteComment = async (req, res) => {
   }
   await req.user.save();
 
-  const updatedComment = await Comment.findByIdAndUpdate(
+  await Comment.findByIdAndUpdate(
     commentId,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
-  ).populate("user");
+  );
 
-  res.json(updatedComment);
+  res.status(200).end();
 };
 
 const downvoteComment = async (req, res) => {
@@ -74,9 +74,9 @@ const downvoteComment = async (req, res) => {
     commentId,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
-  ).populate("user");
+  );
 
-  res.json(updatedComment);
+  res.status(200).end();
 };
 
 module.exports = {
