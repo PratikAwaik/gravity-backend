@@ -70,7 +70,7 @@ const downvoteComment = async (req, res) => {
   }
   await req.user.save();
 
-  const updatedComment = await Comment.findByIdAndUpdate(
+  await Comment.findByIdAndUpdate(
     commentId,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
@@ -79,9 +79,36 @@ const downvoteComment = async (req, res) => {
   res.status(200).end();
 };
 
+const editComment = async (req, res) => {
+  const updatedComment = await Comment.findByIdAndUpdate(
+    req.params.commentId,
+    { ...req.body, editedAt: Date.now() },
+    { new: true }
+  ).populate("user");
+  res.json(updatedComment);
+};
+
+const deleteComment = async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  if (comment.user.toString() === req.user.id.toString()) {
+    const deletedComment = await Comment.findByIdAndUpdate(
+      comment.id,
+      { content: "[deleted]", user: null },
+      { new: true }
+    );
+    res.json(deletedComment);
+  } else {
+    res
+      .status(401)
+      .send({ error: "You are not authorized to delete the post" });
+  }
+};
+
 module.exports = {
   getAllComments,
   createComment,
   upvoteComment,
   downvoteComment,
+  editComment,
+  deleteComment,
 };

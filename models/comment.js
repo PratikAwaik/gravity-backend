@@ -67,11 +67,6 @@ CommentSchema.post("findOneAndDelete", async function (doc) {
   if (doc) {
     const Post = doc.model("Post");
     const User = doc.model("User");
-    // remove comment from post
-    // will be used when a single comment is deleted
-    // const post = await Post.findById(doc.post);
-    // post.comments = helpers.filteredArray(post.comments, doc._id);
-    // await post.save();
 
     // remove comment from user
     const user = await User.findById(doc.user);

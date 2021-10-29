@@ -11,9 +11,31 @@ router.get("/", commentsController.getAllComments);
 router.post("/", middleware.userExtractor, commentsController.createComment);
 
 // upvote comment
-router.patch("/:commentId/upvote", middleware.userExtractor, commentsController.upvoteComment);
+router.patch(
+  "/:commentId/upvote",
+  middleware.userExtractor,
+  commentsController.upvoteComment
+);
 
 // downvote comment
-router.patch("/:commentId/downvote", middleware.userExtractor, commentsController.downvoteComment);
+router.patch(
+  "/:commentId/downvote",
+  middleware.userExtractor,
+  commentsController.downvoteComment
+);
+
+// delete comment (sending PATCH request because actually deleting a comment will cause it's child comments to be deleted as well)
+router.patch(
+  "/:commentId/delete",
+  middleware.userExtractor,
+  commentsController.deleteComment
+);
+
+// edit comment
+router.patch(
+  "/:commentId/edit",
+  middleware.userExtractor,
+  commentsController.editComment
+);
 
 module.exports = router;
