@@ -36,7 +36,7 @@ const getPosts = async (req, res) => {
         model: "Subreddit",
       },
     });
-  res.json(user.posts);
+  res.json({ posts: user.posts });
 };
 
 const getComments = async (req, res) => {
@@ -47,7 +47,7 @@ const getComments = async (req, res) => {
       model: "User",
     },
   });
-  res.json(user.comments);
+  res.json({ comments: user.comments });
 };
 
 const registerUser = async (req, res) => {
@@ -55,6 +55,7 @@ const registerUser = async (req, res) => {
   const passwordHash = await bcrypt.hash(body.password, 10);
   const newUser = new User({
     username: body.username,
+    prefixedName: "u/" + body.username,
     email: body.email,
     profilePic: body.profilePic,
     passwordHash,
