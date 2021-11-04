@@ -10,6 +10,9 @@ const UserSchema = new Schema({
     unique: true,
     uniqueCaseInsensitive: true,
   },
+  prefixedName: {
+    type: String,
+  },
   email: {
     type: String,
     required: true,

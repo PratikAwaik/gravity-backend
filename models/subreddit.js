@@ -9,6 +9,9 @@ const SubredditSchema = new Schema({
     unique: true,
     uniqueCaseInsensitive: true,
   },
+  prefixedName: {
+    type: String,
+  },
   description: {
     type: String,
     required: true,
