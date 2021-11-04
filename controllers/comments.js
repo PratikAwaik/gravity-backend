@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Comment = require("../models/comment");
-const Post = require("../models/post");
+const User = require("../models/user");
+const { filteredArray } = require("../utils/helpers");
 
 const getAllComments = async (req, res) => {
   const postId = req.params.id;
@@ -30,13 +31,15 @@ const upvoteComment = async (req, res) => {
   const commentId = req.params.commentId;
 
   if (body.hasUpvotedAlready) {
-    req.user.commentsUpvoted = req.user.commentsUpvoted.filter(
-      (id) => id.toString() !== commentId
+    req.user.commentsUpvoted = filteredArray(
+      req.user.commentsUpvoted,
+      commentId
     );
   } else if (body.hasDownvotedAlready) {
     req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
-    req.user.commentsDownvoted = req.user.commentsDownvoted.filter(
-      (id) => id.toString() !== commentId
+    req.user.commentsDownvoted = filteredArray(
+      req.user.commentsDownvoted,
+      commentId
     );
   } else {
     req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
@@ -57,13 +60,15 @@ const downvoteComment = async (req, res) => {
   const commentId = req.params.commentId;
 
   if (body.hasDownvotedAlready) {
-    req.user.commentsDownvoted = req.user.commentsDownvoted.filter(
-      (id) => id.toString() !== commentId
+    req.user.commentsDownvoted = filteredArray(
+      req.user.commentsDownvoted,
+      commentId
     );
   } else if (body.hasUpvotedAlready) {
     req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
-    req.user.commentsUpvoted = req.user.commentsUpvoted.filter(
-      (id) => id.toString() !== commentId
+    req.user.commentsUpvoted = filteredArray(
+      req.user.commentsUpvoted,
+      commentId
     );
   } else {
     req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
@@ -96,11 +101,13 @@ const deleteComment = async (req, res) => {
       { content: "[deleted]", user: null },
       { new: true }
     );
+    req.user.comments = filteredArray(req.user.comments, comment.id);
+    await User.findByIdAndUpdate(req.user.id, { comments: req.user.comments });
     res.json(deletedComment);
   } else {
     res
       .status(401)
-      .send({ error: "You are not authorized to delete the post" });
+      .send({ error: "You are not authorized to delete the comment" });
   }
 };
 
