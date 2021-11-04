@@ -10,11 +10,34 @@ router.get("/all", subredditController.getAllSubreddits);
 // get single subreddit
 router.get("/:id", subredditController.getSingleSubreddit);
 
+// get single subreddit posts
+router.get("/:id/posts", subredditController.getSingleSubredditPosts);
+
+// get single subreddit memebers and moderators
+router.get(
+  "/:id/users",
+  subredditController.getSingleSubredditMembersAndModerators
+);
+
 // create new subreddit
 router.post(
   "/create",
   middleware.userExtractor,
   subredditController.createSubreddit
+);
+
+// subcribe/unsubscribe user
+router.patch(
+  "/:id/subscribe",
+  middleware.userExtractor,
+  subredditController.handleUserSubscription
+);
+
+// update subreddit
+router.patch(
+  "/:id/update",
+  middleware.userExtractor,
+  subredditController.updateSubreddit
 );
 
 module.exports = router;
