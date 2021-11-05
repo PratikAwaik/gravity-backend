@@ -80,7 +80,7 @@ const handleUserSubscription = async (req, res) => {
 const updateSubreddit = async (req, res) => {
   const subreddit = await Subreddit.findById(req.params.id);
   if (subreddit.moderators.includes(req.user.id)) {
-    await Subreddit.findByIdAndUpdate(req.params.id, { ...req.body });
+    await Subreddit.findByIdAndUpdate(req.params.id, req.body);
     res.status(200).end();
   } else {
     res
