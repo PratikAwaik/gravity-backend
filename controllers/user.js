@@ -90,10 +90,10 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
-  res.json(user);
+  res.status(200).end();
 };
 
 module.exports = {
