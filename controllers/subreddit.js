@@ -9,7 +9,8 @@ const getAllSubreddits = async (req, res) => {
 
 const getSingleSubreddit = async (req, res) => {
   const subreddit = await Subreddit.findById(req.params.id);
-  res.json(subreddit);
+  if (subreddit) res.json(subreddit);
+  else res.status(404).send({ error: "Subreddit not found!" });
 };
 
 const getSingleSubredditPosts = async (req, res) => {
@@ -20,7 +21,13 @@ const getSingleSubredditPosts = async (req, res) => {
       model: "User",
     },
   });
-  res.json({ posts: subreddit.posts });
+  if (subreddit) {
+    res.json({ posts: subreddit.posts });
+  } else {
+    res
+      .status(404)
+      .send({ error: "Cannot get posts for non-existent subreddit!" });
+  }
 };
 
 const getSingleSubredditMembersAndModerators = async (req, res) => {
@@ -28,7 +35,17 @@ const getSingleSubredditMembersAndModerators = async (req, res) => {
     "members",
     "moderators",
   ]);
-  res.json({ members: subreddit.members, moderators: subreddit.moderators });
+
+  if (subreddit) {
+    res.json({
+      members: subreddit.members,
+      moderators: subreddit.moderators,
+    });
+  } else {
+    res.status(404).send({
+      error: "Cannot get members and moderators for non-existent members!",
+    });
+  }
 };
 
 function getRandomColor() {
@@ -46,7 +63,7 @@ const createSubreddit = async (req, res) => {
     ...body,
     name: body.name,
     prefixedName: "r/" + body.name,
-    communityIcon: body.image,
+    communityIcon: body.communityIcon,
     members: [req.user.id],
     moderators: [req.user.id],
     coverColor: getRandomColor(),

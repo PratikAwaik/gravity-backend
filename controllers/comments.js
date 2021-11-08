@@ -29,59 +29,64 @@ const createComment = async (req, res) => {
 const upvoteComment = async (req, res) => {
   const body = req.body;
   const commentId = req.params.commentId;
-
-  if (body.hasUpvotedAlready) {
-    req.user.commentsUpvoted = filteredArray(
-      req.user.commentsUpvoted,
-      commentId
-    );
-  } else if (body.hasDownvotedAlready) {
-    req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
-    req.user.commentsDownvoted = filteredArray(
-      req.user.commentsDownvoted,
-      commentId
-    );
-  } else {
-    req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
-  }
-  await req.user.save();
-
-  await Comment.findByIdAndUpdate(
+  const updatedComment = await Comment.findByIdAndUpdate(
     commentId,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
   );
 
-  res.status(200).end();
+  if (updatedComment) {
+    if (body.hasUpvotedAlready) {
+      req.user.commentsUpvoted = filteredArray(
+        req.user.commentsUpvoted,
+        commentId
+      );
+    } else if (body.hasDownvotedAlready) {
+      req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
+      req.user.commentsDownvoted = filteredArray(
+        req.user.commentsDownvoted,
+        commentId
+      );
+    } else {
+      req.user.commentsUpvoted = req.user.commentsUpvoted.concat(commentId);
+    }
+    await req.user.save();
+    res.status(200).end();
+  } else {
+    res.status(404).send({ error: "Comment does not exist!" });
+  }
 };
 
 const downvoteComment = async (req, res) => {
   const body = req.body;
   const commentId = req.params.commentId;
 
-  if (body.hasDownvotedAlready) {
-    req.user.commentsDownvoted = filteredArray(
-      req.user.commentsDownvoted,
-      commentId
-    );
-  } else if (body.hasUpvotedAlready) {
-    req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
-    req.user.commentsUpvoted = filteredArray(
-      req.user.commentsUpvoted,
-      commentId
-    );
-  } else {
-    req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
-  }
-  await req.user.save();
-
-  await Comment.findByIdAndUpdate(
+  const updatedComment = await Comment.findByIdAndUpdate(
     commentId,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
   );
 
-  res.status(200).end();
+  if (updatedComment) {
+    if (body.hasDownvotedAlready) {
+      req.user.commentsDownvoted = filteredArray(
+        req.user.commentsDownvoted,
+        commentId
+      );
+    } else if (body.hasUpvotedAlready) {
+      req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
+      req.user.commentsUpvoted = filteredArray(
+        req.user.commentsUpvoted,
+        commentId
+      );
+    } else {
+      req.user.commentsDownvoted = req.user.commentsDownvoted.concat(commentId);
+    }
+    await req.user.save();
+    res.status(200).end();
+  } else {
+    res.status(404).send({ error: "Comment does not exist!" });
+  }
 };
 
 const editComment = async (req, res) => {

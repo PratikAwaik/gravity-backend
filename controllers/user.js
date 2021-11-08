@@ -9,7 +9,9 @@ const getAllUsers = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
   const user = await User.findById(req.params.id);
-  res.json(user);
+  if (user) {
+    res.json(user);
+  } else res.status(404).send({ error: "User not found!" });
 };
 
 const getSubreddits = async (req, res) => {
@@ -17,7 +19,16 @@ const getSubreddits = async (req, res) => {
     "subscriptions",
     "moderating",
   ]);
-  res.json({ subscriptions: user.subscriptions, moderating: user.moderating });
+  if (user) {
+    res.json({
+      subscriptions: user.subscriptions,
+      moderating: user.moderating,
+    });
+  } else {
+    res
+      .status(404)
+      .send({ error: "Cannot get subreddits for non-existent user!" });
+  }
 };
 
 const getPosts = async (req, res) => {
@@ -36,7 +47,12 @@ const getPosts = async (req, res) => {
         model: "Subreddit",
       },
     });
-  res.json({ posts: user.posts });
+
+  if (user) {
+    res.json({ posts: user.posts });
+  } else {
+    res.status(404).send({ error: "Cannot get posts for non-existent user!" });
+  }
 };
 
 const getComments = async (req, res) => {
@@ -47,7 +63,14 @@ const getComments = async (req, res) => {
       model: "User",
     },
   });
-  res.json({ comments: user.comments });
+
+  if (user) {
+    res.json({ comments: user.comments });
+  } else {
+    res
+      .status(404)
+      .send({ error: "Cannot get comments for non-existent user!" });
+  }
 };
 
 const registerUser = async (req, res) => {

@@ -1,20 +1,21 @@
 const Post = require("../models/post");
+const User = require("../models/user");
 const { filteredArray } = require("../utils/helpers");
 
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find({})
-    .populate("user")
-    .populate("comments")
-    .populate("subreddit");
+  const posts = await Post.find({}).populate("user").populate("subreddit");
   res.json(posts);
 };
 
 const getSinglePost = async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("user")
-    .populate("comments")
     .populate("subreddit");
-  res.json(post);
+  if (post) {
+    res.json(post);
+  } else {
+    res.status(404).send({ error: "Post does not exist" });
+  }
 };
 
 const createPost = async (req, res) => {
@@ -63,42 +64,60 @@ const editPost = async (req, res) => {
 const handleUpvotes = async (req, res) => {
   const body = req.body;
   const id = req.params.id;
+
   const updatedPost = await Post.findByIdAndUpdate(
     id,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
   );
-  if (body.hasUpvotedAlready) {
-    req.user.postsUpvoted = filteredArray(req.user.postsUpvoted, id);
-  } else if (body.hasDownvotedAlready) {
-    req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
-    req.user.postsDownvoted = filteredArray(req.user.postsDownvoted, id);
-  } else {
-    req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
-  }
+  if (updatedPost) {
+    if (body.hasUpvotedAlready) {
+      req.user.postsUpvoted = filteredArray(req.user.postsUpvoted, id);
+    } else if (body.hasDownvotedAlready) {
+      req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
+      req.user.postsDownvoted = filteredArray(req.user.postsDownvoted, id);
+    } else {
+      req.user.postsUpvoted = req.user.postsUpvoted.concat(updatedPost.id);
+    }
 
-  await req.user.save();
-  res.status(200).end();
+    await User.findByIdAndUpdate(req.user.id, {
+      postsUpvoted: req.user.postsUpvoted,
+      postsDownvoted: req.user.postsDownvoted,
+    });
+    res.status(200).end();
+  } else {
+    res.status(404).send({ error: "Post does not exist!" });
+  }
 };
 
 const handleDownvotes = async (req, res) => {
   const body = req.body;
   const id = req.params.id;
+
   const updatedPost = await Post.findByIdAndUpdate(
     id,
     { upvotes: body.upvotes, downvotes: body.downvotes },
     { new: true }
   );
-  if (body.hasDownvotedAlready) {
-    req.user.postsDownvoted = filteredArray(req.user.postsDownvoted, id);
-  } else if (body.hasUpvotedAlready) {
-    req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
-    req.user.postsUpvoted = filteredArray(req.user.postsUpvoted, id);
+
+  if (updatedPost) {
+    if (body.hasDownvotedAlready) {
+      req.user.postsDownvoted = filteredArray(req.user.postsDownvoted, id);
+    } else if (body.hasUpvotedAlready) {
+      req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
+      req.user.postsUpvoted = filteredArray(req.user.postsUpvoted, id);
+    } else {
+      req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
+    }
+
+    await User.findByIdAndUpdate(req.user.id, {
+      postsUpvoted: req.user.postsUpvoted,
+      postsDownvoted: req.user.postsDownvoted,
+    });
+    res.status(200).end();
   } else {
-    req.user.postsDownvoted = req.user.postsDownvoted.concat(updatedPost.id);
+    res.status(404).send({ error: "Post does not exist!" });
   }
-  await req.user.save();
-  res.status(200).end();
 };
 
 module.exports = {
