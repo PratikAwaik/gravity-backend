@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
   content: {
     type: String,
-    required: true,
+    required: [true, "How can you not comment anything? Write something :/"],
     minlength: 3,
   },
   post: {

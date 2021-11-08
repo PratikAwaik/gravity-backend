@@ -5,12 +5,11 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   title: {
     type: String,
-    required: true,
+    required: [true, "Please provide a title to your post."],
     maxlength: 300,
   },
   content: {
     type: String,
-    required: true,
   },
   subreddit: {
     type: Schema.Types.ObjectId,

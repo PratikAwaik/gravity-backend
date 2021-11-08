@@ -5,8 +5,11 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true,
-    minlength: 3,
+    required: [
+      true,
+      "It's difficult to a identify person without their name. Please provide it.",
+    ],
+    minlength: [3, "Your username must have atleast 3 characters"],
     unique: true,
     uniqueCaseInsensitive: true,
   },
@@ -15,7 +18,10 @@ const UserSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: [
+      true,
+      "Please provide your email. Don't worry, I won't steal anything like Facebook",
+    ],
     unique: true,
     uniqueCaseInsensitive: true,
   },
@@ -79,7 +85,10 @@ const UserSchema = new Schema({
   ],
 });
 
-UserSchema.plugin(uniqueValidator);
+UserSchema.plugin(uniqueValidator, {
+  message:
+    "Be a little creative. Provide a different {PATH} as this one is already taken.",
+});
 
 UserSchema.set("toJSON", {
   transform: (document, returnedObject) => {

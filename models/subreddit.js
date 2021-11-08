@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const SubredditSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "You can't create a nameless community :/"],
     unique: true,
     uniqueCaseInsensitive: true,
   },
@@ -14,7 +14,7 @@ const SubredditSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
+    required: [true, "Write something about your community, will you?"],
   },
   communityIcon: {
     type: String,
@@ -49,7 +49,10 @@ const SubredditSchema = new Schema({
   },
 });
 
-SubredditSchema.plugin(uniqueValidator);
+SubredditSchema.plugin(uniqueValidator, {
+  message:
+    "Be a little creative. Provide a different {PATH} as this one is already taken.",
+});
 
 SubredditSchema.set("toJSON", {
   transform: (document, returnedObject) => {
