@@ -41,14 +41,6 @@ app.use("/api/r", subredditsRouter);
 app.use("/api/forums", postsRouter);
 app.use("/api/forums/:id/comments", commentsRouter);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("build"));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "build", "index.html"));
-  });
-}
-
 /* error handler middlewares */
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);
