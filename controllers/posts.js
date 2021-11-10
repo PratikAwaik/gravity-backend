@@ -1,10 +1,16 @@
 const Post = require("../models/post");
 const User = require("../models/user");
-const { filteredArray } = require("../utils/helpers");
+const { filteredArray, paginateResults } = require("../utils/helpers");
 
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find({}).populate("user").populate("subreddit");
-  res.json(posts);
+  const limit = Number(req.query.limit);
+  const page = Number(req.query.page);
+
+  const posts = await Post.find({})
+    .sort({ createdAt: -1 })
+    .populate("user")
+    .populate("subreddit");
+  res.json(paginateResults(page, limit, posts));
 };
 
 const getSinglePost = async (req, res) => {
