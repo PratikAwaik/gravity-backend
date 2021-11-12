@@ -8,15 +8,16 @@ const getAllPosts = async (req, res) => {
 
   const posts = await Post.find({})
     .sort({ createdAt: -1 })
-    .populate("user")
-    .populate("subreddit");
+    .populate("user", "prefixedName")
+    .populate("subreddit", ["prefixedName", "communityIcon"]);
+
   res.json(paginateResults(page, limit, posts));
 };
 
 const getSinglePost = async (req, res) => {
   const post = await Post.findById(req.params.id)
-    .populate("user")
-    .populate("subreddit");
+    .populate("user", "prefixedName")
+    .populate("subreddit", ["prefixedName", "communityIcon"]);
   if (post) {
     res.json(post);
   } else {

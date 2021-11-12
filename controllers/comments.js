@@ -5,7 +5,11 @@ const { filteredArray } = require("../utils/helpers");
 
 const getAllComments = async (req, res) => {
   const postId = req.params.id;
-  const comments = await Comment.find({ post: postId }).populate("user");
+  const comments = await Comment.find({ post: postId }).populate("user", [
+    "profilePic",
+    "username",
+    "posts",
+  ]);
   res.json(comments);
 };
 
