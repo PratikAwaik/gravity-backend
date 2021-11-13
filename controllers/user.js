@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+const { paginateResults } = require("../utils/helpers");
 
 const getAllUsers = async (req, res) => {
   const users = await User.find({});
@@ -15,10 +16,19 @@ const getSingleUser = async (req, res) => {
 };
 
 const getSubreddits = async (req, res) => {
-  const user = await User.findById(req.params.id).populate([
-    "subscriptions",
-    "moderating",
-  ]);
+  const user = await User.findById(req.params.id)
+    .populate("subscriptions", [
+      "prefixedName",
+      "communityIcon",
+      "members",
+      "coverColor",
+    ])
+    .populate("moderating", [
+      "prefixedName",
+      "communityIcon",
+      "members",
+      "coverColor",
+    ]);
   if (user) {
     res.json({
       subscriptions: user.subscriptions,
@@ -32,12 +42,16 @@ const getSubreddits = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
+
   const user = await User.findById(req.params.id)
     .populate({
       path: "posts",
       populate: {
         path: "user",
         model: "User",
+        select: "prefixedName",
       },
     })
     .populate({
@@ -45,27 +59,32 @@ const getPosts = async (req, res) => {
       populate: {
         path: "subreddit",
         model: "Subreddit",
+        select: "prefixedName communityIcon",
       },
     });
 
   if (user) {
-    res.json({ posts: user.posts });
+    res.json({ posts: paginateResults(page, limit, user.posts) });
   } else {
     res.status(404).send({ error: "Cannot get posts for non-existent user!" });
   }
 };
 
 const getComments = async (req, res) => {
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
+
   const user = await User.findById(req.params.id).populate({
     path: "comments",
     populate: {
       path: "user",
       model: "User",
+      select: "username profilePic",
     },
   });
 
   if (user) {
-    res.json({ comments: user.comments });
+    res.json({ comments: paginateResults(page, limit, user.comments) });
   } else {
     res
       .status(404)
