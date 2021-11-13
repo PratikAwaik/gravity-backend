@@ -19,6 +19,7 @@ const getSingleSubredditPosts = async (req, res) => {
     populate: {
       path: "user",
       model: "User",
+      select: "prefixedName",
     },
   });
   if (subreddit) {
@@ -31,10 +32,9 @@ const getSingleSubredditPosts = async (req, res) => {
 };
 
 const getSingleSubredditMembersAndModerators = async (req, res) => {
-  const subreddit = await Subreddit.findById(req.params.id).populate([
-    "members",
-    "moderators",
-  ]);
+  const subreddit = await Subreddit.findById(req.params.id)
+    .populate("members", ["prefixedName", "profilePic"])
+    .populate("moderators", ["prefixedName", "profilePic"]);
 
   if (subreddit) {
     res.json({
