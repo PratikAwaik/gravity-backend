@@ -1,6 +1,6 @@
 const Subreddit = require("../models/subreddit");
 const User = require("../models/user");
-const { filteredArray } = require("../utils/helpers");
+const { filteredArray, paginateResults } = require("../utils/helpers");
 
 const getAllSubreddits = async (req, res) => {
   const subreddits = await Subreddit.find({});
@@ -14,6 +14,8 @@ const getSingleSubreddit = async (req, res) => {
 };
 
 const getSingleSubredditPosts = async (req, res) => {
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
   const subreddit = await Subreddit.findById(req.params.id).populate({
     path: "posts",
     populate: {
@@ -23,7 +25,7 @@ const getSingleSubredditPosts = async (req, res) => {
     },
   });
   if (subreddit) {
-    res.json({ posts: subreddit.posts });
+    res.json({ posts: paginateResults(page, limit, subreddit.posts) });
   } else {
     res
       .status(404)
