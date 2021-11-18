@@ -35,8 +35,11 @@ const createPost = async (req, res) => {
     createdAt: Date.now(),
   });
   await newPost.save();
+  const populatedPost = await (
+    await newPost.populate("user", "prefixedName")
+  ).populate("subreddit", ["prefixedName", "communityIcon"]);
 
-  res.json(newPost);
+  res.json(populatedPost);
 };
 
 const deletePost = async (req, res) => {
