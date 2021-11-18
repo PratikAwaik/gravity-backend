@@ -25,7 +25,10 @@ const createComment = async (req, res) => {
     createdAt: Date.now(),
   });
   await newComment.save();
-  const populatedComment = await newComment.populate("user");
+  const populatedComment = await newComment.populate("user", [
+    "username",
+    "profilePic",
+  ]);
 
   res.json(populatedComment);
 };
