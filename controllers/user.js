@@ -64,7 +64,7 @@ const getPosts = async (req, res) => {
     });
 
   if (user) {
-    res.json({ posts: paginateResults(page, limit, user.posts) });
+    res.json(paginateResults(page, limit, user.posts));
   } else {
     res.status(404).send({ error: "Cannot get posts for non-existent user!" });
   }
@@ -84,7 +84,7 @@ const getComments = async (req, res) => {
   });
 
   if (user) {
-    res.json({ comments: paginateResults(page, limit, user.comments) });
+    res.json(paginateResults(page, limit, user.comments));
   } else {
     res
       .status(404)
