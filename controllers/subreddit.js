@@ -25,7 +25,7 @@ const getSingleSubredditPosts = async (req, res) => {
     },
   });
   if (subreddit) {
-    res.json({ posts: paginateResults(page, limit, subreddit.posts) });
+    res.json(paginateResults(page, limit, subreddit.posts));
   } else {
     res
       .status(404)
@@ -84,8 +84,11 @@ const handleUserSubscription = async (req, res) => {
   } else {
     subreddit.members = filteredArray(subreddit.members, req.user.id);
     subreddit.moderators = filteredArray(subreddit.moderators, req.user.id);
-    req.user.subscriptions = filteredArray(req.user.subscriptions, req.user.id);
-    req.user.moderating = filteredArray(req.user.moderating, req.user.id);
+    req.user.subscriptions = filteredArray(
+      req.user.subscriptions,
+      req.params.id
+    );
+    req.user.moderating = filteredArray(req.user.moderating, req.params.id);
   }
   await Subreddit.findByIdAndUpdate(req.params.id, {
     members: subreddit.members,
