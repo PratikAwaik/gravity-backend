@@ -8,6 +8,7 @@ const getAllPosts = async (req, res) => {
 
   const posts = await Post.find({})
     .sort({ createdAt: -1 })
+    .select("-comments")
     .populate("user", "prefixedName")
     .populate("subreddit", ["prefixedName", "communityIcon"]);
 
@@ -16,6 +17,7 @@ const getAllPosts = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
   const post = await Post.findById(req.params.id)
+    .select("-comments")
     .populate("user", "prefixedName")
     .populate("subreddit", ["prefixedName", "communityIcon"]);
   if (post) {
@@ -23,6 +25,20 @@ const getSinglePost = async (req, res) => {
   } else {
     res.status(404).send({ error: "Post does not exist" });
   }
+};
+
+const getSearchPosts = async (req, res) => {
+  const searchString = req.query.search;
+  const subreddit = req.query.subreddit; // this query does not exist right now
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
+
+  const posts = await Post.find({
+    title: { $regex: searchString, $options: "i" },
+  })
+    .populate("user", "prefixedName")
+    .populate("subreddit", ["prefixedName", "communityIcon"]);
+  res.json(paginateResults(page, limit, posts));
 };
 
 const createPost = async (req, res) => {
@@ -133,6 +149,7 @@ const handleDownvotes = async (req, res) => {
 module.exports = {
   getAllPosts,
   getSinglePost,
+  getSearchPosts,
   createPost,
   deletePost,
   editPost,
