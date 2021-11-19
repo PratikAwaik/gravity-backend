@@ -40,14 +40,15 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
+  commentsCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 PostSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
+  transform: (document, returnedObject) =>
+    helpers.transformModel(document, returnedObject),
 });
 
 PostSchema.post("save", async function (doc) {
