@@ -50,6 +50,15 @@ const getSingleSubredditMembersAndModerators = async (req, res) => {
   }
 };
 
+const getSearchSubreddits = async (req, res) => {
+  const searchString = req.query.search;
+
+  const subreddits = await Subreddit.find({
+    name: { $regex: searchString, $options: "i" },
+  });
+  res.json(subreddits);
+};
+
 function getRandomColor() {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -80,18 +89,19 @@ const handleUserSubscription = async (req, res) => {
   const subreddit = await Subreddit.findById(req.params.id);
   if (subscribe) {
     subreddit.members = subreddit.members.concat(req.user.id);
+    subreddit.membersCount = subreddit.membersCount + 1;
     req.user.subscriptions = req.user.subscriptions.concat(req.params.id);
   } else {
     subreddit.members = filteredArray(subreddit.members, req.user.id);
-    subreddit.moderators = filteredArray(subreddit.moderators, req.user.id);
+    subreddit.membersCount = subreddit.membersCount - 1;
     req.user.subscriptions = filteredArray(
       req.user.subscriptions,
       req.params.id
     );
-    req.user.moderating = filteredArray(req.user.moderating, req.params.id);
   }
   await Subreddit.findByIdAndUpdate(req.params.id, {
     members: subreddit.members,
+    membersCount: subreddit.membersCount,
   });
   await User.findByIdAndUpdate(req.user.id, {
     subscriptions: req.user.subscriptions,
@@ -116,6 +126,7 @@ module.exports = {
   getSingleSubreddit,
   getSingleSubredditPosts,
   getSingleSubredditMembersAndModerators,
+  getSearchSubreddits,
   createSubreddit,
   handleUserSubscription,
   updateSubreddit,
