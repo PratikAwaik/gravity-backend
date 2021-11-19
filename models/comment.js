@@ -40,11 +40,8 @@ const CommentSchema = new Schema({
 });
 
 CommentSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
+  transform: (document, returnedObject) =>
+    helpers.transformModel(document, returnedObject),
 });
 
 CommentSchema.post("save", async function (doc) {
@@ -54,6 +51,7 @@ CommentSchema.post("save", async function (doc) {
   const post = await Post.findById(doc.post);
   await Post.findByIdAndUpdate(doc.post, {
     comments: post.comments.concat(doc._id),
+    commentsCount: post.commentsCount + 1,
   });
 
   // save comment in user
