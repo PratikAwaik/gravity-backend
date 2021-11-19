@@ -7,6 +7,9 @@ const router = express.Router();
 // get all subreddits
 router.get("/all", subredditController.getAllSubreddits);
 
+// search for subreddits
+router.get("/search", subredditController.getSearchSubreddits);
+
 // get single subreddit
 router.get("/:id", subredditController.getSingleSubreddit);
 

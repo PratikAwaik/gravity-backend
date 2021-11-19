@@ -6,6 +6,9 @@ const router = express.Router();
 // get all posts
 router.get("/", postsController.getAllPosts);
 
+// search for posts
+router.get("/search", postsController.getSearchPosts);
+
 // get single post
 router.get("/:id", postsController.getSinglePost);
 
