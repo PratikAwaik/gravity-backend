@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const { transformModel } = require("../utils/helpers");
 const Schema = mongoose.Schema;
 
 const SubredditSchema = new Schema({
@@ -31,6 +32,10 @@ const SubredditSchema = new Schema({
       ref: "User",
     },
   ],
+  membersCount: {
+    type: Number,
+    default: 0,
+  },
   moderators: [
     {
       type: Schema.Types.ObjectId,
@@ -55,11 +60,8 @@ SubredditSchema.plugin(uniqueValidator, {
 });
 
 SubredditSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
+  transform: (document, returnedObject) =>
+    transformModel(document, returnedObject),
 });
 
 SubredditSchema.post("save", async function (doc) {
