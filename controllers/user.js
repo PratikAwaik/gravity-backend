@@ -20,14 +20,16 @@ const getSubreddits = async (req, res) => {
     .populate("subscriptions", [
       "prefixedName",
       "communityIcon",
-      "members",
+      "membersCount",
       "coverColor",
+      "description",
     ])
     .populate("moderating", [
       "prefixedName",
       "communityIcon",
-      "members",
+      "membersCount",
       "coverColor",
+      "description",
     ]);
   if (user) {
     res.json({
