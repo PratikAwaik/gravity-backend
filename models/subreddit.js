@@ -34,14 +34,12 @@ const SubredditSchema = new Schema({
   ],
   membersCount: {
     type: Number,
-    default: 0,
+    default: 1,
   },
-  moderators: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  moderator: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   coverColor: {
     type: String,
   },
