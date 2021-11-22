@@ -1,3 +1,4 @@
+const Post = require("../models/post");
 const Subreddit = require("../models/subreddit");
 const User = require("../models/user");
 const { filteredArray, paginateResults } = require("../utils/helpers");
@@ -16,16 +17,14 @@ const getSingleSubreddit = async (req, res) => {
 const getSingleSubredditPosts = async (req, res) => {
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
-  const subreddit = await Subreddit.findById(req.params.id).populate({
-    path: "posts",
-    populate: {
-      path: "user",
-      model: "User",
-      select: "prefixedName",
-    },
-  });
-  if (subreddit) {
-    res.json(paginateResults(page, limit, subreddit.posts));
+
+  const posts = await Post.find({ subreddit: req.params.id })
+    .select("-comments")
+    .populate("user", "prefixedName")
+    .populate("subreddit", ["prefixedName", "communityIcon"]);
+
+  if (posts) {
+    res.json(paginateResults(page, limit, posts));
   } else {
     res
       .status(404)
@@ -36,12 +35,12 @@ const getSingleSubredditPosts = async (req, res) => {
 const getSingleSubredditMembersAndModerators = async (req, res) => {
   const subreddit = await Subreddit.findById(req.params.id)
     .populate("members", ["prefixedName", "profilePic"])
-    .populate("moderators", ["prefixedName", "profilePic"]);
+    .populate("moderator", ["prefixedName", "profilePic"]);
 
   if (subreddit) {
     res.json({
       members: subreddit.members,
-      moderators: subreddit.moderators,
+      moderator: subreddit.moderator,
     });
   } else {
     res.status(404).send({
@@ -55,7 +54,7 @@ const getSearchSubreddits = async (req, res) => {
 
   const subreddits = await Subreddit.find({
     name: { $regex: searchString, $options: "i" },
-  });
+  }).select(["communityIcon", "prefixedName", "membersCount", "description"]);
   res.json(subreddits);
 };
 
@@ -76,7 +75,7 @@ const createSubreddit = async (req, res) => {
     prefixedName: "r/" + body.name,
     communityIcon: body.communityIcon,
     members: [req.user.id],
-    moderators: [req.user.id],
+    moderator: req.user.id,
     coverColor: getRandomColor(),
   });
 
@@ -111,7 +110,7 @@ const handleUserSubscription = async (req, res) => {
 
 const updateSubreddit = async (req, res) => {
   const subreddit = await Subreddit.findById(req.params.id);
-  if (subreddit.moderators.includes(req.user.id)) {
+  if (subreddit.moderator.toString() === req.user.id.toString()) {
     await Subreddit.findByIdAndUpdate(req.params.id, req.body);
     res.status(200).end();
   } else {
