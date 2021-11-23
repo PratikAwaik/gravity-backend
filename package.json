@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "dev": "NODE_ENV=development nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,6 @@
     "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "nodemon": "^2.0.15"
   }
 }
