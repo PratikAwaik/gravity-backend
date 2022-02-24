@@ -16,6 +16,10 @@ User.init({
             min: {
                 args: 4,
                 msg: "Username should contain more than 4 characters"
+            },
+            max: {
+                args: 21,
+                msg: "Username cannot be more than 21 characters"
             }
         },
     },
@@ -34,6 +38,10 @@ User.init({
     password: {
         type: DataTypes.TEXT,
         allowNull: false,
+    },
+    icon: {
+        type: DataTypes.TEXT, 
+        allowNull: true
     }
 }, {
     sequelize,

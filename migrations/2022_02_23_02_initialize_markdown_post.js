@@ -2,41 +2,41 @@ const { DataTypes } = require("sequelize");
 
 module.exports = {
     up: async ({ context: queryInterface }) => {
-        await queryInterface.createTable("users", {
+        await queryInterface.createTable("markdown_posts", {
             id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.INTEGER, 
                 primaryKey: true, 
                 autoIncrement: true,
             },
-            username: {
-                type: DataTypes.STRING,
+            title: {
+                type: DataTypes.TEXT, 
                 allowNull: false,
-                unique: true,
                 validate: {
                     min: {
-                        args: 4,
-                        msg: "Username should contain more than 4 characters"
+                        args: 5, 
+                        msg: "Title should be more than 5 characters"
                     }
-                },
-            },
-            email: {
-                type: DataTypes.STRING,
-                unique: true,
-                allowNull: false,
-                validate: {
-                    min: {
-                        args: 7,
-                        msg: "Email should contain more than 7 characters",
-                    },
                 }
             },
-            password: {
-                type: DataTypes.TEXT,
-                allowNull: false,
-            },
-            icon: {
+            content: {
                 type: DataTypes.TEXT, 
-                allowNull: true
+                allowNull: false,
+                validate: {
+                    min: {
+                        args: 8, 
+                        msg: "Content should be more than 8 characters",
+                    }
+                }
+            },
+            author_id: {
+                type: DataTypes.INTEGER, 
+                allowNull: false,
+                references: { model: "users", key: "id" },
+            },
+            subreddit_id: {
+                type: DataTypes.INTEGER, 
+                allowNull: false,
+                references: { model: "subreddits", key: "id" },
             },
             created_at: { 
                 type: DataTypes.DATE, 
@@ -49,6 +49,6 @@ module.exports = {
         });
     },
     down: async ({ context: queryInterface }) => {
-        await queryInterface.dropTable("users");
+        await queryInterface.dropTable("markdown_posts");
     }
 }

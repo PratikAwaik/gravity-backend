@@ -32,6 +32,7 @@ const runMigrations = async () => {
 const rollbackMigration = async () => {
     await sequelize.authenticate();
     const migrator = new Umzug(migratorConfig);
+    // pass { to: 0 } as parameter to rollback all migrations at once. 
     await migrator.down();
 }
 
