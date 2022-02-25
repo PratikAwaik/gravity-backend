@@ -5,6 +5,7 @@ const typeDef = gql`
         id: ID!
         username: String!
         email: String!
+        icon: String
     }
 `;
 
