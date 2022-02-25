@@ -1,8 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
 const { sequelize } = require("../util/db");
 
-class MarkdownPost extends Model {};
-MarkdownPost.init({
+class MediaPost extends Model {};
+MediaPost.init({
     id: {
         type: DataTypes.INTEGER, 
         primaryKey: true, 
@@ -19,18 +19,12 @@ MarkdownPost.init({
             max: {
                 args: 300,
                 msg: "Title should not be more than 300 characters"
-            },
+            }
         }
     },
-    content: {
+    media: {
         type: DataTypes.TEXT, 
         allowNull: false,
-        validate: {
-            min: {
-                args: 8, 
-                msg: "Content should be more than 8 characters",
-            },
-        }
     },
     authorId: {
         type: DataTypes.INTEGER, 
@@ -45,13 +39,13 @@ MarkdownPost.init({
     type: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "markdown",
+        defaultValue: "media",
     }
 }, {
     sequelize, 
     underscored: true,
     timestamps: true,
-    modelName: "markdown_posts"
+    modelName: "media_posts"
 });
 
-module.exports = MarkdownPost;
+module.exports = MediaPost;
