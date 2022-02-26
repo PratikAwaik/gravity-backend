@@ -44,7 +44,7 @@ module.exports = {
             },
             updated_at: { 
                 type: DataTypes.DATE, 
-                defaultValue: DataTypes.NOW 
+                allowNull: true,
             },
         });
     },

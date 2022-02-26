@@ -1,33 +1,9 @@
-const { User, Subreddit, MarkdownPost } = require("../models");
+const queryController = require("../controllers/query");
 
 const queryResolver = {
-    allUsers: () => {
-        return User.findAll();
-    },
-    allSubreddits: async () => {
-        const subreddits = await Subreddit.findAll({
-            include: { model: User, as: "admin", attributes: { exclude: ["markdownPostId"] } },
-            attributes: {
-                exclude: ["userId", "markdownPostId"]
-            }
-        });
-        return subreddits; 
-    },
-    allMarkdownPosts: () => {
-        return MarkdownPost.findAll({
-            include: [
-                {
-                    model: User,
-                    as: "author",
-                }, 
-                {
-                    model: Subreddit,
-                    attributes: { exclude: ["userId"] }
-                }
-            ],
-            attributes: { exclude: ["userId"] },
-        });
-    }
+    allUsers: queryController.allUsers,
+    allSubreddits: queryController.allSubreddits,
+    allMarkdownPosts: queryController.allMarkdownPosts,
 }
 
 module.exports = queryResolver;

@@ -34,7 +34,6 @@ User.init({
             },
         }
     },
-    // should be HASHED
     password: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -42,7 +41,7 @@ User.init({
     icon: {
         type: DataTypes.TEXT, 
         allowNull: true
-    }
+    },
 }, {
     sequelize,
     underscored: true,

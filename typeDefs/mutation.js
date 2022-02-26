@@ -8,6 +8,10 @@ const Mutation = gql`
             password: String!
             icon: String
         ): User 
+        loginUser(
+            username: String!
+            password: String!
+        ): Token
     }
 `;
 
