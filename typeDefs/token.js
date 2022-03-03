@@ -1,9 +1,9 @@
 const { gql } = require("apollo-server");
 
 const typeDef = gql`
-    type Token {
-        value: String!
-    }
+  type Token {
+    value: String!
+  }
 `;
 
 module.exports = typeDef;

@@ -8,12 +8,12 @@ const mutationDef = require("./mutation");
 const tokenDef = require("./token");
 
 const typeDefs = [
-    userDef, 
-    subredditDef, 
-    markdownPostDef, 
-    tokenDef, 
-    queryDef, 
-    mutationDef
+  userDef,
+  subredditDef,
+  markdownPostDef,
+  tokenDef,
+  queryDef,
+  mutationDef,
 ];
 
 module.exports = typeDefs;

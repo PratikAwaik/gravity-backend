@@ -5,19 +5,19 @@ const MarkdownPost = require("./markdownPost");
 
 User.hasMany(Subreddit);
 Subreddit.belongsTo(User, {
-    as: "admin"
+  as: "admin",
 });
 
 User.hasMany(MarkdownPost);
 MarkdownPost.belongsTo(User, {
-    as: "author"
+  as: "author",
 });
 
 Subreddit.hasMany(MarkdownPost);
 MarkdownPost.belongsTo(Subreddit);
 
 module.exports = {
-    User,
-    Subreddit,
-    MarkdownPost,
-}
+  User,
+  Subreddit,
+  MarkdownPost,
+};

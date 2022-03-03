@@ -1,5 +1,3 @@
-const userResolver = {
-    
-}
+const userResolver = {};
 
 module.exports = userResolver;

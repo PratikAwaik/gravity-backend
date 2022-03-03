@@ -1,38 +1,42 @@
-const { User, Subreddit, MarkdownPost } = require("../models")
+const { User, Subreddit, MarkdownPost } = require("../models");
 
 const allUsers = () => {
-    return User.findAll();
-}
+  return User.findAll();
+};
 
 const allSubreddits = async () => {
-    const subreddits = await Subreddit.findAll({
-        include: { model: User, as: "admin", attributes: { exclude: ["markdownPostId"] } },
-        attributes: {
-            exclude: ["userId", "markdownPostId"]
-        }
-    });
-    return subreddits;
-}
+  const subreddits = await Subreddit.findAll({
+    include: {
+      model: User,
+      as: "admin",
+      attributes: { exclude: ["markdownPostId"] },
+    },
+    attributes: {
+      exclude: ["userId", "markdownPostId"],
+    },
+  });
+  return subreddits;
+};
 
 const allMarkdownPosts = async () => {
-    const posts = await MarkdownPost.findAll({
-        include: [
-            {
-                model: User,
-                as: "author",
-            }, 
-            {
-                model: Subreddit,
-                attributes: { exclude: ["userId"] }
-            }
-        ],
+  const posts = await MarkdownPost.findAll({
+    include: [
+      {
+        model: User,
+        as: "author",
+      },
+      {
+        model: Subreddit,
         attributes: { exclude: ["userId"] },
-    });
-    return posts;
-}
+      },
+    ],
+    attributes: { exclude: ["userId"] },
+  });
+  return posts;
+};
 
 module.exports = {
-    allUsers,
-    allSubreddits,
-    allMarkdownPosts,
-}
+  allUsers,
+  allSubreddits,
+  allMarkdownPosts,
+};
