@@ -39,7 +39,7 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      icon: {
+      profile_pic: {
         type: DataTypes.TEXT,
         allowNull: true,
       },

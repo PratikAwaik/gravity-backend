@@ -40,7 +40,7 @@ User.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    icon: {
+    profilePic: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
