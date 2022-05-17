@@ -5,7 +5,9 @@ const typeDef = gql`
     id: ID!
     username: String!
     email: String!
-    icon: String
+    profilePic: String
+    createdAt: String!
+    updatedAt: String
     token: Token
   }
 `;

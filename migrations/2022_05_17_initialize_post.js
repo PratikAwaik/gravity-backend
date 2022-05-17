@@ -1,17 +1,18 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
-    await queryInterface.createTable("media_posts", {
+    await queryInterface.createTable("posts", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       title: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(300),
         allowNull: false,
         validate: {
+          // min max validators not working
           min: {
             args: 5,
             msg: "Title should be more than 5 characters",
@@ -22,28 +23,28 @@ module.exports = {
           },
         },
       },
-      media: {
+      content: {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      authorId: {
+      author_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: "users", key: "id" },
       },
-      subredditId: {
+      subreddit_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: "subreddits", key: "id" },
       },
       type: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(10),
         allowNull: false,
-        defaultValue: "media",
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
         type: DataTypes.DATE,
@@ -52,6 +53,6 @@ module.exports = {
     });
   },
   down: async ({ context: queryInterface }) => {
-    await queryInterface.dropTable("media_posts");
+    await queryInterface.dropTable("posts");
   },
 };

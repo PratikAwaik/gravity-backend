@@ -39,7 +39,7 @@ const connectToDatabase = async () => {
   } catch (error) {
     console.log("Failed to connect to the database");
     console.error(error);
-    process.exit(0);
+    process.exit(1);
   }
 };
 

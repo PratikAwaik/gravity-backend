@@ -1,23 +1,21 @@
 /* Sequelize Models */
 const User = require("./user");
 const Subreddit = require("./subreddit");
-const MarkdownPost = require("./markdownPost");
+const Post = require("./post");
 
-User.hasMany(Subreddit);
-Subreddit.belongsTo(User, {
-  as: "admin",
-});
+User.hasMany(Subreddit, { foreignKey: "adminId" });
+Subreddit.belongsTo(User, { as: "admin" });
 
-User.hasMany(MarkdownPost);
-MarkdownPost.belongsTo(User, {
+User.hasMany(Post, { foreignKey: "authorId" });
+Post.belongsTo(User, {
   as: "author",
 });
 
-Subreddit.hasMany(MarkdownPost);
-MarkdownPost.belongsTo(Subreddit);
+Subreddit.hasMany(Post);
+Post.belongsTo(Subreddit);
 
 module.exports = {
   User,
   Subreddit,
-  MarkdownPost,
+  Post,
 };

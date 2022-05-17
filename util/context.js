@@ -1,8 +1,8 @@
 /* ApolloServer Context */
 
 const jwt = require("jsonwebtoken");
-const { User } = require("./models");
-const { JWT_SECRET } = require("./util/config");
+const { User } = require("../models");
+const { JWT_SECRET } = require("./config");
 
 const context = async ({ req }) => {
   const auth = req ? req.headers.authorization : null;

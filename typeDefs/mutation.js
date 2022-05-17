@@ -8,7 +8,14 @@ const Mutation = gql`
       password: String!
       icon: String
     ): User
+
     loginUser(username: String!, password: String!): Token
+
+    createNewSubreddit(
+      name: String!
+      description: String!
+      icon: String
+    ): Subreddit
   }
 `;
 

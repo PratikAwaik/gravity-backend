@@ -10,19 +10,19 @@ User.init(
       autoIncrement: true,
     },
     username: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(21),
       allowNull: false,
       unique: true,
       validate: {
+        // min max validators not working
         min: {
-          args: 3,
+          args: [3],
           msg: "Username should contain more than 3 characters",
         },
-        max: {
-          args: 21,
-          msg: "Username cannot be more than 21 characters",
+        is: {
+          args: ["^[a-zA-Z0-9_]+$"],
+          msg: 'Usernames cannot have spaces (e.g., "r/username" not "r/user name"), must be between 3-21 characters, and underscores ("_") are the only special characters allowed.',
         },
-        is: ["^[a-zA-Z0-9_]+$"],
       },
     },
     email: {
@@ -30,12 +30,12 @@ User.init(
       unique: true,
       allowNull: false,
       validate: {
-        min: {
-          args: 7,
-          msg: "Email should contain more than 7 characters",
+        isEmail: {
+          msg: "The provided email is of invalid format.",
         },
       },
     },
+    // hashed password
     password: {
       type: DataTypes.TEXT,
       allowNull: false,

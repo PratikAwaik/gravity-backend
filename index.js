@@ -5,7 +5,7 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const express = require("express");
 const typeDefs = require("./typeDefs");
 const resolvers = require("./resolvers");
-const context = require("./context");
+const context = require("./util/context");
 const { PORT } = require("./util/config");
 const { connectToDatabase } = require("./util/db");
 

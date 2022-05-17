@@ -1,8 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
 const { sequelize } = require("../util/db");
 
-class MediaPost extends Model {}
-MediaPost.init(
+class Post extends Model {}
+Post.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -10,20 +10,17 @@ MediaPost.init(
       autoIncrement: true,
     },
     title: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(300),
       allowNull: false,
       validate: {
+        // min validator not working
         min: {
           args: 5,
           msg: "Title should be more than 5 characters",
         },
-        max: {
-          args: 300,
-          msg: "Title should not be more than 300 characters",
-        },
       },
     },
-    media: {
+    content: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
@@ -38,17 +35,16 @@ MediaPost.init(
       references: { model: "subreddits", key: "id" },
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: "media",
     },
   },
   {
     sequelize,
     underscored: true,
     timestamps: true,
-    modelName: "media_posts",
+    modelName: "post",
   }
 );
 
-module.exports = MediaPost;
+module.exports = Post;

@@ -6,8 +6,10 @@ const typeDef = gql`
     name: String!
     prefixedName: String!
     description: String!
-    icon: String!
+    icon: String
     admin: User!
+    createdAt: String!
+    updatedAt: String
   }
 `;
 

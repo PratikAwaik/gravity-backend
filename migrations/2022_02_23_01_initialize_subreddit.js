@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
@@ -9,28 +9,26 @@ module.exports = {
         autoIncrement: true,
       },
       name: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(21),
         allowNull: false,
         unique: true,
         validate: {
+          // min validators not working
           min: {
             args: 3,
             msg: "Community name should be more than 3 characters",
           },
-          max: {
-            args: 21,
-            msg: "Community name should be less than 21 characters",
-          },
         },
       },
       prefixed_name: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(23),
         allowNull: false,
       },
       description: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {
+          // min validator not working
           min: {
             args: 10,
             msg: "Description of the community should not be less than 10 characters",
@@ -48,7 +46,8 @@ module.exports = {
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
         type: DataTypes.DATE,

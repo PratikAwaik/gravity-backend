@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
@@ -9,17 +9,14 @@ module.exports = {
         autoIncrement: true,
       },
       username: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(21),
         allowNull: false,
         unique: true,
         validate: {
+          // min validator not working
           min: {
-            args: 3,
+            args: [3],
             msg: "Username should contain more than 3 characters",
-          },
-          max: {
-            args: 21,
-            msg: "Username cannot be more than 21 characters",
           },
           is: ["^[a-zA-Z0-9_]+$"],
         },
@@ -29,9 +26,8 @@ module.exports = {
         unique: true,
         allowNull: false,
         validate: {
-          min: {
-            args: 7,
-            msg: "Email should contain more than 7 characters",
+          isEmail: {
+            msg: "The provided email is of invalid format.",
           },
         },
       },
@@ -45,7 +41,8 @@ module.exports = {
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
         type: DataTypes.DATE,
