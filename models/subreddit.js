@@ -30,7 +30,7 @@ Subreddit.init(
       allowNull: false,
     },
     description: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(350),
       allowNull: false,
       validate: {
         // min validator not working
