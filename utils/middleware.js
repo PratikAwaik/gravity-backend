@@ -26,7 +26,9 @@ const userExtractor = async (req, res, next) => {
     }
     next();
   } else {
-    res.status(401).send({ error: "Signup or Login to create a post" });
+    res
+      .status(401)
+      .send({ error: "You are not authorized to access this route." });
   }
 };
 

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const prisma = require("../utils/prismaClient");
+const { removePasswordFromUser } = require("../utils/helpers");
 
 /**
  * get all users
@@ -9,6 +10,25 @@ const prisma = require("../utils/prismaClient");
 const getAllUsers = async (req, res) => {
   const allUsers = await prisma.user.findMany();
   res.json(allUsers);
+};
+
+/**
+ * get single user with id
+ */
+const getUserById = async (req, res) => {
+  const user = removePasswordFromUser(
+    await prisma.user.findFirst({
+      where: {
+        id: req.params.id,
+      },
+    })
+  );
+
+  if (!user) {
+    res.status(400).json({ error: "User does not exist" });
+  } else {
+    res.json(user);
+  }
 };
 
 /**
@@ -93,27 +113,9 @@ const loginUser = async (req, res) => {
   });
 };
 
-/**
- * get single user with id
- */
-const getUserById = async (req, res) => {
-  // hide password
-  const user = await prisma.user.findFirst({
-    where: {
-      id: req.params.id,
-    },
-  });
-
-  if (!user) {
-    res.status(400).json({ error: "User does not exist" });
-  } else {
-    res.json(user);
-  }
-};
-
 module.exports = {
   getAllUsers,
+  getUserById,
   registerUser,
   loginUser,
-  getUserById,
 };

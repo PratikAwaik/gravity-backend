@@ -9,11 +9,30 @@ const getAllSubreddits = async (req, res) => {
 };
 
 /**
+ * get subreddit by id
+ */
+const getSubredditById = async (req, res) => {
+  const subreddit = await prisma.subreddit.findFirst({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  if (!subreddit) {
+    res.status(400).json({ error: "Subreddit does not exist." });
+    return;
+  }
+
+  res.json(subreddit);
+};
+
+/**
  * create new subreddit
  */
 const createNewSubreddit = async (req, res) => {
   const { name, description, icon } = req.body;
 
+  // this does not execute because we already have check in middleware
   if (!req.user) {
     res
       .status(401)
@@ -39,7 +58,11 @@ const createNewSubreddit = async (req, res) => {
         prefixedName: `r/${name}`,
         description,
         icon,
-        adminId: req.user.id,
+        user: {
+          connect: {
+            id: req.user.id,
+          },
+        },
       },
     });
     res.json(newSubreddit);
@@ -51,26 +74,8 @@ const createNewSubreddit = async (req, res) => {
   }
 };
 
-/**
- * get subreddit by id
- */
-const getSubredditById = async (req, res) => {
-  const subreddit = await prisma.subreddit.findFirst({
-    where: {
-      id: req.params.id,
-    },
-  });
-
-  if (!subreddit) {
-    res.status(400).json({ error: "Subreddit does not exist." });
-    return;
-  }
-
-  res.json(subreddit);
-};
-
 module.exports = {
   getAllSubreddits,
-  createNewSubreddit,
   getSubredditById,
+  createNewSubreddit,
 };

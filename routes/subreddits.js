@@ -7,6 +7,9 @@ const router = express.Router();
 /* get all subreddits */
 router.get("/", subredditsController.getAllSubreddits);
 
+/* get subreddit by id */
+router.get("/:id", subredditsController.getSubredditById);
+
 /* create new subreddit */
 router.post(
   "/create",
