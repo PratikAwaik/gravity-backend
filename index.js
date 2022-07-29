@@ -8,6 +8,7 @@ const express = require("express");
  */
 const usersRouter = require("./routes/users");
 const subredditsRouter = require("./routes/subreddits");
+const postsRouter = require("./routes/posts");
 
 /**
  * General Imports
@@ -34,6 +35,7 @@ app.use(middleware.tokenExtractor);
  */
 app.use("/api/v2/users", usersRouter);
 app.use("/api/v2/subreddits", subredditsRouter);
+app.use("/api/v2/posts", postsRouter);
 
 /**
  * Run the server

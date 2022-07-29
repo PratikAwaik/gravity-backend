@@ -1,6 +1,6 @@
 const express = require("express");
 const subredditsController = require("../controllers/subreddits");
-const middleware = require("../utils/middleware");
+const { userExtractor } = require("../utils/middleware");
 
 const router = express.Router();
 
@@ -11,10 +11,6 @@ router.get("/", subredditsController.getAllSubreddits);
 router.get("/:id", subredditsController.getSubredditById);
 
 /* create new subreddit */
-router.post(
-  "/create",
-  middleware.userExtractor,
-  subredditsController.createNewSubreddit
-);
+router.post("/create", userExtractor, subredditsController.createNewSubreddit);
 
 module.exports = router;
