@@ -4,6 +4,8 @@ const { userExtractor } = require("../utils/middleware");
 
 const router = express.Router();
 
+console.log("users");
+
 /* get all subreddits */
 router.get("/", subredditsController.getAllSubreddits);
 
