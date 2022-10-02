@@ -11,67 +11,23 @@ datasource db {
 }
 
 model User {
-  id               String      @id @default(uuid())
-  username         String      @unique @db.VarChar(256)
-  prefixedUsername String      @unique @map("prefixed_username") @db.VarChar(256)
-  email            String      @unique
-  password         String
-  profilePic       String?     @map("profile_pic")
-  createdAt        DateTime    @default(now()) @map("created_at")
-  updatedAt        DateTime    @updatedAt @map("updated_at")
-  subreddits       Subreddit[]
-  posts            Post[]
-  comments         Comment[]
-
-  @@map("users")
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email String @unique
+  image String?
+  role Role @default(USER)
 }
 
-model Subreddit {
-  id           String   @id @default(uuid())
-  name         String   @unique @db.VarChar(256)
-  prefixedName String   @unique @map("prefixed_name") @db.VarChar(256)
-  description  String
-  icon         String?
-  adminId      String   @map("admin_id")
-  user         User     @relation(fields: [adminId], references: [id])
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  posts        Post[]
-
-  @@map("subreddits")
+enum Role {
+  ADMIN
+  USER
 }
 
-enum PostType {
-  TEXT
-  MEDIA
-  LINK
-}
-
-model Post {
-  id          String    @id @default(uuid())
-  title       String    @db.VarChar(300)
-  content     String
-  authorId    String    @map("author_id")
-  user        User      @relation(fields: [authorId], references: [id])
-  subredditId String    @map("subreddit_id")
-  subreddit   Subreddit @relation(fields: [subredditId], references: [id])
-  type        PostType
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  comments    Comment[]
-
-  @@map("posts")
-}
-
-model Comment {
-  id        String   @id @default(uuid())
-  content   String
-  authorId  String   @map("author_id")
-  user      User     @relation(fields: [authorId], references: [id])
-  postId    String   @map("post_id")
-  post      Post     @relation(fields: [postId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("comments")
+model Link {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String
+  url String
 }
