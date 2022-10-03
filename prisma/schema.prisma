@@ -11,23 +11,69 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email String @unique
-  image String?
-  role Role @default(USER)
+  id                   String      @id @default(uuid())
+  username             String      @unique @db.VarChar(256)
+  prefixedUsername     String      @unique @map("prefixed_username") @db.VarChar(256)
+  email                String      @unique
+  password             String
+  profilePic           String?     @map("profile_pic")
+  moderatedCommunities Community[] @relation("moderated_communities")
+  joinedCommunities    Community[] @relation("joined_communities")
+  posts                Post[]
+  comments             Comment[]
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
-enum Role {
-  ADMIN
-  USER
+model Community {
+  id           String   @id @default(uuid())
+  name         String   @unique @db.VarChar(256)
+  prefixedName String   @unique @map("prefixed_name") @db.VarChar(256)
+  description  String
+  icon         String?
+  adminId      String   @map("admin_id")
+  user         User     @relation("moderated_communities", fields: [adminId], references: [id])
+  posts        Post[]
+  members      User[]   @relation("joined_communities")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("communities")
 }
 
-model Link {
-  id String @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title String
-  url String
+enum PostType {
+  TEXT
+  MEDIA
+  LINK
+}
+
+model Post {
+  id          String    @id @default(uuid())
+  title       String    @db.VarChar(300)
+  content     String
+  authorId    String    @map("author_id")
+  user        User      @relation(fields: [authorId], references: [id])
+  communityId String    @map("community_id")
+  community   Community @relation(fields: [communityId], references: [id])
+  type        PostType
+  comments    Comment[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("posts")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  authorId  String   @map("author_id")
+  user      User     @relation(fields: [authorId], references: [id])
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("comments")
 }
