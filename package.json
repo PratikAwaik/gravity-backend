@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/PratikAwaik/gravity-backend#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^8.5.9",
     "@types/lodash": "^4.14.186",
     "prisma": "^4.4.0",
     "ts-node-dev": "^2.0.0",
@@ -28,7 +30,9 @@
     "@prisma/client": "^4.4.0",
     "apollo-server": "^3.10.2",
     "apollo-server-core": "^3.10.2",
+    "bcryptjs": "^2.4.3",
     "graphql": "^16.6.0",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21"
   }
 }

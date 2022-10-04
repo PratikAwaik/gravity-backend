@@ -1,6 +1,10 @@
 import { gql } from "apollo-server-core";
 
 export const typeDef = gql`
+  type Token {
+    value: String!
+  }
+
   type User {
     id: ID!
     username: String!
@@ -14,9 +18,15 @@ export const typeDef = gql`
     comments: [Comment]!
     createdAt: String!
     updatedAt: String!
+    token: Token
   }
 
   extend type Query {
     allUsers: [User]!
+  }
+
+  extend type Mutation {
+    registerUser(username: String!, email: String!, password: String!): User
+    loginUser(username: String!, password: String!): User
   }
 `;

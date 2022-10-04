@@ -4,15 +4,27 @@ import { userResolver, userSchema } from "./users";
 import { communityResolver, communitySchema } from "./community";
 import { postResolver, postSchema } from "./posts";
 import { commentSchema, commentResolver } from "./comments";
+import { gql } from "apollo-server-core";
 
-const query = `type Query {
-  _empty: String
-}`;
+const initialSchema = gql`
+  type Query {
+    _empty: String
+  }
+  type Mutation {
+    _empty: String
+  }
+`;
 
 const resolvers = {};
 
 export const executableSchema = makeExecutableSchema({
-  typeDefs: [query, userSchema, communitySchema, postSchema, commentSchema],
+  typeDefs: [
+    initialSchema,
+    userSchema,
+    communitySchema,
+    postSchema,
+    commentSchema,
+  ],
   resolvers: merge(
     resolvers,
     userResolver,

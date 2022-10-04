@@ -1,9 +1,12 @@
-import prisma from "../../lib/prisma";
+import UserController from "../../controllers/users";
 
 export const resolver = {
   Query: {
-    allUsers: async () => {
-      return prisma.user.findMany({});
-    },
+    allUsers: UserController.allUsers,
+  },
+
+  Mutation: {
+    registerUser: UserController.registerUser,
+    loginUser: UserController.loginUser,
   },
 };
