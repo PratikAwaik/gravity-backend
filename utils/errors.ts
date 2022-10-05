@@ -1,5 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { UserInputError } from "apollo-server";
+import { Prisma, User } from "@prisma/client";
+import { AuthenticationError, UserInputError } from "apollo-server";
+import { Context } from "apollo-server-core";
 
 export const throwError = (
   errorType: any,
@@ -12,10 +13,21 @@ export const throwError = (
 export const handleError = (error: any) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // unique constraint error
-    if (error.code === "P2002") {
-      const { target } = error.meta as Record<string, string>;
-      return throwError(UserInputError, `${target[0]} should be unique.`);
+    switch (error.code) {
+      case "P2002":
+        const { target } = error.meta as Record<string, string>;
+        return throwError(UserInputError, `${target[0]} should be unique.`);
+      default:
+        return error;
     }
-    return error;
   } else return error;
+};
+
+export const handleAuthenticationError = (
+  context: Context<{ currentUser: User }>
+) => {
+  const { currentUser } = context;
+  if (!currentUser) {
+    return throwError(AuthenticationError, "Please login to continue");
+  }
 };

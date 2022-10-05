@@ -54,7 +54,7 @@ model Post {
   title       String    @db.VarChar(300)
   content     String
   authorId    String    @map("author_id")
-  user        User      @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
   communityId String    @map("community_id")
   community   Community @relation(fields: [communityId], references: [id])
   type        PostType

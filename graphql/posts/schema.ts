@@ -6,7 +6,9 @@ export const typeDef = gql`
     title: String!
     content: String!
     authorId: String!
-    communityId: String
+    author: User!
+    communityId: String!
+    community: Community!
     type: PostType!
     comments: [Comment]!
     createdAt: String!
@@ -21,5 +23,14 @@ export const typeDef = gql`
 
   extend type Query {
     allPosts: [Post]!
+  }
+
+  extend type Mutation {
+    createPost(
+      title: String!
+      content: String!
+      type: PostType!
+      communityId: String!
+    ): Post
   }
 `;

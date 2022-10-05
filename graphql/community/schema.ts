@@ -17,4 +17,8 @@ export const typeDef = gql`
   extend type Query {
     allCommunities: [Community]!
   }
+
+  extend type Mutation {
+    createCommunity(name: String!, description: String!): Community
+  }
 `;
