@@ -1,9 +1,9 @@
-import prisma from "../../utils/prisma";
+import CommentsController from "../../controllers/comments";
+
+const { getAllComments } = new CommentsController();
 
 export const resolver = {
   Query: {
-    allComments: async () => {
-      return prisma.comment.findMany({});
-    },
+    allComments: getAllComments,
   },
 };

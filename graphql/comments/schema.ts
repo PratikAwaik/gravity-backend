@@ -13,4 +13,8 @@ export const typeDef = gql`
   extend type Query {
     allComments: [Comment]!
   }
+
+  extend type Mutation {
+    createComment(content: String!, )
+  }
 `;
