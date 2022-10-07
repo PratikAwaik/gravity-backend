@@ -1,12 +1,14 @@
-import UserController from "../../controllers/users";
+import UsersController from "../../controllers/users";
+
+const { allUsers, registerUser, loginUser } = new UsersController();
 
 export const resolver = {
   Query: {
-    allUsers: UserController.allUsers,
+    allUsers: allUsers,
   },
 
   Mutation: {
-    registerUser: UserController.registerUser,
-    loginUser: UserController.loginUser,
+    registerUser: registerUser,
+    loginUser: loginUser,
   },
 };

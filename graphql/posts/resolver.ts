@@ -1,12 +1,13 @@
 import PostsController from "../../controllers/posts";
-import prisma from "../../utils/prisma";
+
+const { getAllPosts, createPost } = new PostsController();
 
 export const resolver = {
   Query: {
-    allPosts: PostsController.getAllPosts,
+    allPosts: getAllPosts,
   },
 
   Mutation: {
-    createPost: PostsController.createPost,
+    createPost: createPost,
   },
 };

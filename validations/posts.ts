@@ -1,7 +1,8 @@
 import { UserInputError } from "apollo-server";
+import { ICreatePostArgs } from "../models/posts";
 import { throwError } from "../utils/errors";
 
-export const validateCreatePostDetails = (args: any) => {
+export const validateCreatePostDetails = (args: ICreatePostArgs) => {
   if (args?.title?.length < 3) {
     return throwError(
       UserInputError,

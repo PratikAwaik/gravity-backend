@@ -1,6 +1,7 @@
 import { Prisma, User } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server";
 import { Context } from "apollo-server-core";
+import { IApolloContext } from "../models/context";
 
 export const throwError = (
   errorType: any,
@@ -23,9 +24,7 @@ export const handleError = (error: any) => {
   } else return error;
 };
 
-export const handleAuthenticationError = (
-  context: Context<{ currentUser: User }>
-) => {
+export const handleAuthenticationError = (context: Context<IApolloContext>) => {
   const { currentUser } = context;
   if (!currentUser) {
     return throwError(AuthenticationError, "Please login to continue");

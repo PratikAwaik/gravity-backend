@@ -7,19 +7,29 @@ import {
 } from "../validations/users";
 import { handleError, throwError } from "../utils/errors";
 import { UserInputError } from "apollo-server";
+import { User } from "@prisma/client";
+import {
+  ILoginUserArgs,
+  IRegisterUserArgs,
+  IUsersController,
+  UserWithToken,
+} from "../models/users";
 
-export default class UserController {
+export default class UserController implements IUsersController {
   /**
    * get all users
    */
-  static allUsers = async () => {
+  public allUsers = async (): Promise<User[]> => {
     return await prisma.user.findMany({});
   };
 
   /**
    * register user
    */
-  static registerUser = async (_: any, args: any) => {
+  public registerUser = async (
+    _: unknown,
+    args: IRegisterUserArgs
+  ): Promise<UserWithToken | void> => {
     validateRegisterUserDetails(args);
     try {
       const passwordHash = await bcrypt.hash(args.password, 10);
@@ -44,7 +54,8 @@ export default class UserController {
   /**
    * login user
    */
-  static loginUser = async (_: any, args: any) => {
+  // * return type should be UserWithToken
+  public loginUser = async (_: unknown, args: ILoginUserArgs): Promise<any> => {
     validateLoginUserDetails(args);
 
     try {

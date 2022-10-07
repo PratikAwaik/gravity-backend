@@ -1,12 +1,19 @@
+import { Community } from "@prisma/client";
+import { Context } from "apollo-server-core";
+import {
+  ICommunityController,
+  ICreateCommunityArgs,
+} from "../models/community";
+import { IApolloContext } from "../models/context";
 import { handleAuthenticationError, handleError } from "../utils/errors";
 import prisma from "../utils/prisma";
-import { validateCreateSubredditDetails } from "../validations/community";
+import { validateCreateCommunityDetails } from "../validations/community";
 
-export default class CommunityController {
+export default class CommunityController implements ICommunityController {
   /**
    * get all communities
    */
-  static getAllCommunities = async () => {
+  public getAllCommunities = async (): Promise<Community[]> => {
     return await prisma.community.findMany({
       include: {
         members: true,
@@ -17,9 +24,13 @@ export default class CommunityController {
   /**
    * create community
    */
-  static createCommunity = async (_: any, args: any, context: any) => {
+  public createCommunity = async (
+    _: unknown,
+    args: ICreateCommunityArgs,
+    context: Context<IApolloContext>
+  ): Promise<Community | void> => {
     handleAuthenticationError(context);
-    validateCreateSubredditDetails(args);
+    validateCreateCommunityDetails(args);
 
     try {
       const community = await prisma.community.create({
@@ -37,7 +48,6 @@ export default class CommunityController {
       });
       return community;
     } catch (error) {
-      console.log(error);
       handleError(error);
     }
   };

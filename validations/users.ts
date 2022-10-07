@@ -1,7 +1,8 @@
 import { UserInputError } from "apollo-server";
+import { ILoginUserArgs, IRegisterUserArgs } from "../models/users";
 import { throwError } from "../utils/errors";
 
-export const validateRegisterUserDetails = (args: any) => {
+export const validateRegisterUserDetails = (args: IRegisterUserArgs) => {
   if (args?.password?.length < 5) {
     throwError(UserInputError, "Password must contain more than 5 characters.");
   } else if (args?.username?.length < 3) {
@@ -16,7 +17,7 @@ export const validateRegisterUserDetails = (args: any) => {
   }
 };
 
-export const validateLoginUserDetails = (args: any) => {
+export const validateLoginUserDetails = (args: ILoginUserArgs) => {
   if (args?.password?.length < 5) {
     throwError(UserInputError, "Password must contain more than 5 characters.");
   } else if (args?.username?.length < 3) {

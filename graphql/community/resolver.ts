@@ -1,12 +1,13 @@
 import CommunityController from "../../controllers/community";
-import prisma from "../../utils/prisma";
+
+const { getAllCommunities, createCommunity } = new CommunityController();
 
 export const resolver = {
   Query: {
-    allCommunities: CommunityController.getAllCommunities,
+    allCommunities: getAllCommunities,
   },
 
   Mutation: {
-    createCommunity: CommunityController.createCommunity,
+    createCommunity: createCommunity,
   },
 };

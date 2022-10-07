@@ -1,7 +1,8 @@
 import { UserInputError } from "apollo-server";
+import { ICreateCommunityArgs } from "../models/community";
 import { throwError } from "../utils/errors";
 
-export const validateCreateSubredditDetails = (args: any) => {
+export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
   if (args?.name?.length < 3) {
     throwError(
       UserInputError,
