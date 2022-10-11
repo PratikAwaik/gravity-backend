@@ -5,16 +5,19 @@ export const typeDef = gql`
     id: ID!
     content: String!
     authorId: String!
+    author: User!
     postId: String!
+    parentId: String
+    children: [Comment]
     createdAt: String!
     updatedAt: String!
   }
 
   extend type Query {
-    allComments: [Comment]!
+    allComments(postId: String!): [Comment]!
   }
 
   extend type Mutation {
-    createComment(content: String!, )
+    createComment(content: String!, postId: String!, parentId: String): Comment
   }
 `;

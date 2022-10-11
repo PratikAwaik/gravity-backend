@@ -59,6 +59,7 @@ model Post {
   community   Community @relation(fields: [communityId], references: [id])
   type        PostType
   comments    Comment[]
+  deleted     Boolean   @default(false)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -66,14 +67,18 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   content   String
-  authorId  String   @map("author_id")
-  author    User     @relation(fields: [authorId], references: [id])
-  postId    String   @map("post_id")
-  post      Post     @relation(fields: [postId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  authorId  String    @map("author_id")
+  author    User      @relation(fields: [authorId], references: [id])
+  postId    String    @map("post_id")
+  post      Post      @relation(fields: [postId], references: [id])
+  parentId  String?   @map("parent_id")
+  parent    Comment?  @relation("parent_children", fields: [parentId], references: [id])
+  children  Comment[] @relation("parent_children")
+  deleted   Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("comments")
 }

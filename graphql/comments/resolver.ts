@@ -1,9 +1,12 @@
 import CommentsController from "../../controllers/comments";
 
-const { getAllComments } = new CommentsController();
+const { getComments, createComment } = new CommentsController();
 
 export const resolver = {
   Query: {
-    allComments: getAllComments,
+    allComments: getComments,
+  },
+  Mutation: {
+    createComment: createComment,
   },
 };

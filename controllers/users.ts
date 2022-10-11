@@ -47,7 +47,7 @@ export default class UserController implements IUsersController {
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
       return { ...user, token: { value: token } };
     } catch (error: any) {
-      handleError(error);
+      return handleError(error);
     }
   };
 
@@ -82,7 +82,7 @@ export default class UserController implements IUsersController {
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
       return { ...user, token: { value: token } };
     } catch (error) {
-      handleError(error);
+      return handleError(error);
     }
   };
 }

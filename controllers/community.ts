@@ -48,7 +48,7 @@ export default class CommunityController implements ICommunityController {
       });
       return community;
     } catch (error) {
-      handleError(error);
+      return handleError(error);
     }
   };
 }

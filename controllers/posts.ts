@@ -42,7 +42,7 @@ export default class PostsController implements IPostsController {
       });
       return post;
     } catch (error) {
-      handleError(error);
+      return handleError(error);
     }
   };
 }
