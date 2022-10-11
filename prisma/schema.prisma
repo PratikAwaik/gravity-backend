@@ -11,18 +11,20 @@ datasource db {
 }
 
 model User {
-  id                   String      @id @default(uuid())
-  username             String      @unique @db.VarChar(256)
-  prefixedUsername     String      @unique @map("prefixed_username") @db.VarChar(256)
-  email                String      @unique
+  id                   String         @id @default(uuid())
+  username             String         @unique @db.VarChar(256)
+  prefixedUsername     String         @unique @map("prefixed_username") @db.VarChar(256)
+  email                String         @unique
   password             String
-  profilePic           String?     @map("profile_pic")
-  moderatedCommunities Community[] @relation("moderated_communities")
-  joinedCommunities    Community[] @relation("joined_communities")
+  profilePic           String?        @map("profile_pic")
+  moderatedCommunities Community[]    @relation("moderated_communities")
+  joinedCommunities    Community[]    @relation("joined_communities")
   posts                Post[]
   comments             Comment[]
-  createdAt            DateTime    @default(now()) @map("created_at")
-  updatedAt            DateTime    @updatedAt @map("updated_at")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
+  PostScore            PostScore[]
+  CommentScore         CommentScore[]
 
   @@map("users")
 }
@@ -50,35 +52,59 @@ enum PostType {
 }
 
 model Post {
-  id          String    @id @default(uuid())
-  title       String    @db.VarChar(300)
+  id          String      @id @default(uuid())
+  title       String      @db.VarChar(300)
   content     String
-  authorId    String    @map("author_id")
-  author      User      @relation(fields: [authorId], references: [id])
-  communityId String    @map("community_id")
-  community   Community @relation(fields: [communityId], references: [id])
+  authorId    String      @map("author_id")
+  author      User        @relation(fields: [authorId], references: [id])
+  communityId String      @map("community_id")
+  community   Community   @relation(fields: [communityId], references: [id])
   type        PostType
   comments    Comment[]
-  deleted     Boolean   @default(false)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean     @default(false)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  PostScore   PostScore[]
+  score       Int         @default(0)
 
   @@map("posts")
 }
 
 model Comment {
-  id        String    @id @default(uuid())
-  content   String
-  authorId  String    @map("author_id")
-  author    User      @relation(fields: [authorId], references: [id])
-  postId    String    @map("post_id")
-  post      Post      @relation(fields: [postId], references: [id])
-  parentId  String?   @map("parent_id")
-  parent    Comment?  @relation("parent_children", fields: [parentId], references: [id])
-  children  Comment[] @relation("parent_children")
-  deleted   Boolean   @default(false)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id           String         @id @default(uuid())
+  content      String
+  authorId     String         @map("author_id")
+  author       User           @relation(fields: [authorId], references: [id])
+  postId       String         @map("post_id")
+  post         Post           @relation(fields: [postId], references: [id])
+  parentId     String?        @map("parent_id")
+  parent       Comment?       @relation("parent_children", fields: [parentId], references: [id])
+  children     Comment[]      @relation("parent_children")
+  deleted      Boolean        @default(false)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  CommentScore CommentScore[]
+  score        Int            @default(0)
 
   @@map("comments")
+}
+
+model PostScore {
+  id     String @id @default(uuid())
+  postId String @map("post_id")
+  post   Post   @relation(fields: [postId], references: [id])
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("post_scores")
+}
+
+model CommentScore {
+  id        String  @id @default(uuid())
+  commentId String  @map("comment_id")
+  comment   Comment @relation(fields: [commentId], references: [id])
+  userId    String  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@map("comment_scores")
 }
