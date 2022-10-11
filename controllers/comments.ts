@@ -8,7 +8,10 @@ import {
 import { IApolloContext } from "../models/context";
 import { handleAuthenticationError, handleError } from "../utils/errors";
 import prisma from "../utils/prisma";
-import { validateCreateCommentDetails } from "../validations/comments";
+import {
+  validateCreateCommentDetails,
+  validateGetComments,
+} from "../validations/comments";
 
 export default class CommentsController implements ICommentsController {
   /**
@@ -18,6 +21,7 @@ export default class CommentsController implements ICommentsController {
     _: unknown,
     args: IGetCommentsArgs
   ): Promise<Comment[]> => {
+    validateGetComments(args);
     return await prisma.comment.findMany({
       where: {
         postId: args.postId,
