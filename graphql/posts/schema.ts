@@ -1,6 +1,15 @@
 import { gql } from "apollo-server-core";
 
 export const typeDef = gql`
+  type PostScore {
+    id: ID!
+    postId: String!
+    post: Post!
+    userId: String!
+    user: User!
+    direction: Int!
+  }
+
   type Post {
     id: ID!
     title: String!
@@ -11,6 +20,9 @@ export const typeDef = gql`
     community: Community!
     type: PostType!
     comments: [Comment]!
+    postScores: [PostScore]!
+    score: Int!
+    deleted: Boolean!
     createdAt: String!
     updatedAt: String!
   }
@@ -31,6 +43,7 @@ export const typeDef = gql`
       content: String!
       type: PostType!
       communityId: String!
-    ): Post
+    ): Post!
+    updatePostScore(postId: String!, direction: Int!): Post!
   }
 `;

@@ -1,6 +1,6 @@
 import PostsController from "../../controllers/posts";
 
-const { getAllPosts, createPost } = new PostsController();
+const { getAllPosts, createPost, updatePostScore } = new PostsController();
 
 export const resolver = {
   Query: {
@@ -9,5 +9,6 @@ export const resolver = {
 
   Mutation: {
     createPost: createPost,
+    updatePostScore: updatePostScore,
   },
 };

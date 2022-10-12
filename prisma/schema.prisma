@@ -64,27 +64,27 @@ model Post {
   deleted     Boolean     @default(false)
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
-  PostScore   PostScore[]
+  postScores  PostScore[]
   score       Int         @default(0)
 
   @@map("posts")
 }
 
 model Comment {
-  id           String         @id @default(uuid())
-  content      String
-  authorId     String         @map("author_id")
-  author       User           @relation(fields: [authorId], references: [id])
-  postId       String         @map("post_id")
-  post         Post           @relation(fields: [postId], references: [id])
-  parentId     String?        @map("parent_id")
-  parent       Comment?       @relation("parent_children", fields: [parentId], references: [id])
-  children     Comment[]      @relation("parent_children")
-  deleted      Boolean        @default(false)
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
-  CommentScore CommentScore[]
-  score        Int            @default(0)
+  id            String         @id @default(uuid())
+  content       String
+  authorId      String         @map("author_id")
+  author        User           @relation(fields: [authorId], references: [id])
+  postId        String         @map("post_id")
+  post          Post           @relation(fields: [postId], references: [id])
+  parentId      String?        @map("parent_id")
+  parent        Comment?       @relation("parent_children", fields: [parentId], references: [id])
+  children      Comment[]      @relation("parent_children")
+  deleted       Boolean        @default(false)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  commentScores CommentScore[]
+  score         Int            @default(0)
 
   @@map("comments")
 }

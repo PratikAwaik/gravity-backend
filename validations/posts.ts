@@ -1,21 +1,26 @@
 import { UserInputError } from "apollo-server";
-import { ICreatePostArgs } from "../models/posts";
+import { ICreatePostArgs, IUpdatePostScoreArgs } from "../models/posts";
 import { throwError } from "../utils/errors";
 
 export const validateCreatePostDetails = (args: ICreatePostArgs) => {
   if (args?.title?.length < 3) {
-    return throwError(
-      UserInputError,
-      "Post Title should be more than 3 characters"
-    );
+    throwError(UserInputError, "Post Title should be more than 3 characters");
   } else if (args?.content?.length < 3) {
-    return throwError(
+    throwError(
       UserInputError,
       "Post Description should be more than 3 characters"
     );
   } else if (!args?.type) {
-    return throwError(UserInputError, "Please select the post type");
+    throwError(UserInputError, "Please select the post type");
   } else if (!args.communityId) {
-    return throwError(UserInputError, "Please select community");
+    throwError(UserInputError, "Please select community");
+  }
+};
+
+export const validateUpdatePostScore = (args: IUpdatePostScoreArgs) => {
+  if (!args.postId) {
+    throwError(UserInputError, "post_id is required");
+  } else if (args.direction === null || args.direction === undefined) {
+    throwError(UserInputError, "direction is required");
   }
 };

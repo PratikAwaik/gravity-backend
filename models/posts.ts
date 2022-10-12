@@ -15,6 +15,11 @@ export interface ICreatePostArgs {
   communityId: string;
 }
 
+export interface IUpdatePostScoreArgs {
+  postId: string;
+  direction: number;
+}
+
 export interface IPostsController {
   getAllPosts(): Promise<Post[]>;
   createPost(
@@ -22,4 +27,9 @@ export interface IPostsController {
     args: ICreatePostArgs,
     context: Context<IApolloContext>
   ): Promise<Post | void>;
+  updatePostScore(
+    _: unknown,
+    args: IUpdatePostScoreArgs,
+    context: Context<IApolloContext>
+  ): Promise<Post>;
 }

@@ -1,6 +1,15 @@
 import { gql } from "apollo-server-core";
 
 export const typeDef = gql`
+  type CommentScore {
+    id: ID!
+    commentId: String!
+    comment: Comment!
+    userId: String!
+    user: User!
+    direction: Int!
+  }
+
   type Comment {
     id: ID!
     content: String!
@@ -9,6 +18,9 @@ export const typeDef = gql`
     postId: String!
     parentId: String
     children: [Comment]
+    commentScores: [CommentScore]!
+    score: Int!
+    deleted: Boolean!
     createdAt: String!
     updatedAt: String!
   }
@@ -18,6 +30,7 @@ export const typeDef = gql`
   }
 
   extend type Mutation {
-    createComment(content: String!, postId: String!, parentId: String): Comment
+    createComment(content: String!, postId: String!, parentId: String): Comment!
+    updateCommentScore(commentId: String!, direction: Int!): Comment!
   }
 `;
