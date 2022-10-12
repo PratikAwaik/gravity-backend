@@ -90,11 +90,12 @@ model Comment {
 }
 
 model PostScore {
-  id     String @id @default(uuid())
-  postId String @map("post_id")
-  post   Post   @relation(fields: [postId], references: [id])
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  id        String @id @default(uuid())
+  postId    String @map("post_id")
+  post      Post   @relation(fields: [postId], references: [id])
+  userId    String @map("user_id")
+  user      User   @relation(fields: [userId], references: [id])
+  direction Int    @default(0)
 
   @@map("post_scores")
 }
@@ -105,6 +106,7 @@ model CommentScore {
   comment   Comment @relation(fields: [commentId], references: [id])
   userId    String  @map("user_id")
   user      User    @relation(fields: [userId], references: [id])
+  direction Int     @default(0)
 
   @@map("comment_scores")
 }
