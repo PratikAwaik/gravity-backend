@@ -7,7 +7,7 @@ export const typeDef = gql`
     post: Post!
     userId: String!
     user: User!
-    direction: Int!
+    direction: Direction!
   }
 
   type Post {
@@ -44,6 +44,6 @@ export const typeDef = gql`
       type: PostType!
       communityId: String!
     ): Post!
-    updatePostScore(postId: String!, direction: Int!): Post!
+    updatePostScore(postId: String!, direction: Direction!): Post!
   }
 `;

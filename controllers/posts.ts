@@ -1,6 +1,7 @@
-import { Post } from "@prisma/client";
+import { Post, PostScore } from "@prisma/client";
 import { Context, UserInputError } from "apollo-server-core";
 import { IApolloContext } from "../models/context";
+import { Direction } from "../models/enums";
 import {
   ICreatePostArgs,
   IPostsController,
@@ -11,6 +12,7 @@ import {
   handleError,
   throwError,
 } from "../utils/errors";
+import { getScore } from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreatePostDetails,
@@ -58,7 +60,7 @@ export default class PostsController implements IPostsController {
   };
 
   /**
-   * update score
+   * update post score
    */
   public updatePostScore = async (
     _: unknown,
@@ -69,65 +71,41 @@ export default class PostsController implements IPostsController {
     validateUpdatePostScore(args);
 
     try {
-      let newScore;
-      let newPostScore;
-      const post = await prisma.post.findUnique({
+      let newPostScoreEntity;
+      const post = await prisma.post.findUniqueOrThrow({
         where: {
           id: args.postId,
         },
       });
 
-      if (!post) {
-        throwError(UserInputError, "Post Not Found");
-      }
-
       const postScore = await prisma.postScore.findFirst({
         where: {
-          AND: [{ postId: args.postId }, { userId: context.currentUser.id }],
+          AND: [{ userId: context.currentUser.id }, { postId: args.postId }],
         },
       });
 
-      if (!postScore) {
-        if (args.direction === 1) {
-          // upvote
-          newScore = (post?.score ?? 0) + 1;
-        } else if (args.direction === -1) {
-          // downvote
-          newScore = (post?.score ?? 0) - 1;
-        }
+      const newScore = getScore(args, post, postScore);
 
-        newPostScore = await prisma.postScore.create({
-          data: {
-            postId: args.postId,
-            userId: context.currentUser.id,
-            direction: args.direction,
+      // delete record if unvoting
+      if (args.direction === Direction.UNVOTE && postScore?.id) {
+        await prisma.postScore.delete({
+          where: {
+            id: postScore?.id,
           },
         });
-      } else {
-        if (postScore.direction === 0 && args.direction === 1) {
-          // upvote
-          newScore = (post?.score ?? 0) + 1;
-        } else if (postScore.direction === 0 && args.direction === -1) {
-          // downvote
-          newScore = (post?.score ?? 0) - 1;
-        } else if (postScore.direction === 1 && args.direction === 0) {
-          // unvote
-          newScore = (post?.score ?? 0) - 1;
-        } else if (postScore.direction === 1 && args.direction === -1) {
-          // downvote
-          newScore = (post?.score ?? 0) - 2;
-        } else if (postScore.direction === -1 && args.direction === 0) {
-          // unvote
-          newScore = (post?.score ?? 0) + 1;
-        } else if (postScore.direction === -1 && args.direction === 1) {
-          // upvote
-          newScore = (post?.score ?? 0) + 2;
-        }
-
-        newPostScore = await prisma.postScore.update({
-          where: { id: postScore.id },
-          data: {
+      } else if (args.direction !== Direction.UNVOTE) {
+        // create or update the record if it exists
+        newPostScoreEntity = await prisma.postScore.upsert({
+          create: {
+            userId: context.currentUser.id,
+            postId: args.postId,
             direction: args.direction,
+          },
+          update: {
+            direction: args.direction,
+          },
+          where: {
+            id: postScore?.id || "",
           },
         });
       }
@@ -136,11 +114,13 @@ export default class PostsController implements IPostsController {
         where: { id: args.postId },
         data: {
           score: newScore,
-          postScores: {
-            connect: {
-              id: newPostScore.id,
+          ...(args.direction !== Direction.UNVOTE && {
+            postScores: {
+              connect: {
+                id: newPostScoreEntity?.id,
+              },
             },
-          },
+          }),
         },
         include: {
           postScores: true,

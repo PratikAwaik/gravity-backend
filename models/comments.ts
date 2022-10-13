@@ -1,4 +1,5 @@
 import { Comment } from "@prisma/client";
+import { Direction } from "./enums";
 
 export interface IGetCommentsArgs {
   postId: string;
@@ -12,7 +13,7 @@ export interface ICreateCommentArgs {
 
 export interface IUpdateCommentScoreArgs {
   commentId: string;
-  direction: number;
+  direction: Direction;
 }
 
 export interface ICommentsController {

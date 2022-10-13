@@ -13,6 +13,12 @@ const initialSchema = gql`
   type Mutation {
     _empty: String
   }
+
+  enum Direction {
+    UPVOTE
+    UNVOTE
+    DOWNVOTE
+  }
 `;
 
 const resolvers = {};

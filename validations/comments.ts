@@ -23,7 +23,7 @@ export const validateCreateCommentDetails = (args: ICreateCommentArgs) => {
 export const validateUpdateCommentScore = (args: IUpdateCommentScoreArgs) => {
   if (!args.commentId) {
     throwError(UserInputError, "commentId is required");
-  } else if (args.direction === null || args.direction === undefined) {
+  } else if (!args.direction) {
     throwError(UserInputError, "direction is required");
   }
 };

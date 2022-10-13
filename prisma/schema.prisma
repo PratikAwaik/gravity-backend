@@ -89,24 +89,30 @@ model Comment {
   @@map("comments")
 }
 
+enum Direction {
+  UPVOTE
+  UNVOTE
+  DOWNVOTE
+}
+
 model PostScore {
-  id        String @id @default(uuid())
-  postId    String @map("post_id")
-  post      Post   @relation(fields: [postId], references: [id])
-  userId    String @map("user_id")
-  user      User   @relation(fields: [userId], references: [id])
-  direction Int    @default(0)
+  id        String    @id @default(uuid())
+  postId    String    @map("post_id")
+  post      Post      @relation(fields: [postId], references: [id])
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  direction Direction @default(UNVOTE)
 
   @@map("post_scores")
 }
 
 model CommentScore {
-  id        String  @id @default(uuid())
-  commentId String  @map("comment_id")
-  comment   Comment @relation(fields: [commentId], references: [id])
-  userId    String  @map("user_id")
-  user      User    @relation(fields: [userId], references: [id])
-  direction Int     @default(0)
+  id        String    @id @default(uuid())
+  commentId String    @map("comment_id")
+  comment   Comment   @relation(fields: [commentId], references: [id])
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  direction Direction @default(UNVOTE)
 
   @@map("comment_scores")
 }

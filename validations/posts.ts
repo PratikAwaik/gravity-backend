@@ -20,7 +20,7 @@ export const validateCreatePostDetails = (args: ICreatePostArgs) => {
 export const validateUpdatePostScore = (args: IUpdatePostScoreArgs) => {
   if (!args.postId) {
     throwError(UserInputError, "post_id is required");
-  } else if (args.direction === null || args.direction === undefined) {
+  } else if (!args.direction) {
     throwError(UserInputError, "direction is required");
   }
 };

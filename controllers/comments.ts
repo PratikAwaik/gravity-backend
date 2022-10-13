@@ -7,11 +7,13 @@ import {
   IUpdateCommentScoreArgs,
 } from "../models/comments";
 import { IApolloContext } from "../models/context";
+import { Direction } from "../models/enums";
 import {
   handleAuthenticationError,
   handleError,
   throwError,
 } from "../utils/errors";
+import { getScore } from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreateCommentDetails,
@@ -73,18 +75,13 @@ export default class CommentsController implements ICommentsController {
     validateUpdateCommentScore(args);
 
     try {
-      let newScore;
-      let newCommentScore;
+      let newCommentScoreEntity;
 
-      const comment = await prisma.comment.findUnique({
+      const comment = await prisma.comment.findUniqueOrThrow({
         where: {
           id: args.commentId,
         },
       });
-
-      if (!comment) {
-        throwError(UserInputError, "Comment not found");
-      }
 
       const commentScore = await prisma.commentScore.findFirst({
         where: {
@@ -95,49 +92,26 @@ export default class CommentsController implements ICommentsController {
         },
       });
 
-      if (!commentScore) {
-        if (args.direction === 1) {
-          // upvote
-          newScore = (comment?.score ?? 0) + 1;
-        } else if (args.direction === -1) {
-          // downvote
-          newScore = (comment?.score ?? 0) - 1;
-        }
+      const newScore = getScore(args, comment, commentScore);
 
-        newCommentScore = await prisma.commentScore.create({
-          data: {
-            commentId: args.commentId,
-            userId: context.currentUser.id,
-            direction: args.direction,
+      if (args.direction === Direction.UNVOTE && commentScore?.id) {
+        await prisma.commentScore.delete({
+          where: {
+            id: commentScore?.id,
           },
         });
-      } else {
-        if (commentScore.direction === 0 && args.direction === 1) {
-          // upvote
-          newScore = (comment?.score ?? 0) + 1;
-        } else if (commentScore.direction === 0 && args.direction === -1) {
-          // downvote
-          newScore = (comment?.score ?? 0) - 1;
-        } else if (commentScore.direction === 1 && args.direction === 0) {
-          // unvote
-          newScore = (comment?.score ?? 0) - 1;
-        } else if (commentScore.direction === 1 && args.direction === -1) {
-          // downvote
-          newScore = (comment?.score ?? 0) - 2;
-        } else if (commentScore.direction === -1 && args.direction === 0) {
-          // unvote
-          newScore = (comment?.score ?? 0) + 1;
-        } else if (commentScore.direction === -1 && args.direction === 1) {
-          // upvote
-          newScore = (comment?.score ?? 0) + 2;
-        }
-
-        newCommentScore = await prisma.commentScore.update({
-          where: {
-            id: commentScore.id,
-          },
-          data: {
+      } else if (args.direction !== Direction.UNVOTE) {
+        newCommentScoreEntity = await prisma.commentScore.upsert({
+          create: {
+            userId: context.currentUser.id,
+            commentId: args.commentId,
             direction: args.direction,
+          },
+          update: {
+            direction: args.direction,
+          },
+          where: {
+            id: commentScore?.id || "",
           },
         });
       }
@@ -148,11 +122,13 @@ export default class CommentsController implements ICommentsController {
         },
         data: {
           score: newScore,
-          commentScores: {
-            connect: {
-              id: newCommentScore.id,
+          ...(args.direction !== Direction.UNVOTE && {
+            commentScores: {
+              connect: {
+                id: newCommentScoreEntity?.id,
+              },
             },
-          },
+          }),
         },
         include: {
           commentScores: true,

@@ -7,7 +7,7 @@ export const typeDef = gql`
     comment: Comment!
     userId: String!
     user: User!
-    direction: Int!
+    direction: Direction!
   }
 
   type Comment {
@@ -31,6 +31,6 @@ export const typeDef = gql`
 
   extend type Mutation {
     createComment(content: String!, postId: String!, parentId: String): Comment!
-    updateCommentScore(commentId: String!, direction: Int!): Comment!
+    updateCommentScore(commentId: String!, direction: Direction!): Comment!
   }
 `;
