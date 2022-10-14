@@ -1,9 +1,11 @@
 import { Comment } from "@prisma/client";
-import { Context, UserInputError } from "apollo-server-core";
+import { Context } from "apollo-server-core";
 import {
   ICommentsController,
   ICreateCommentArgs,
+  IDeleteCommentArgs,
   IGetCommentsArgs,
+  IUpdateCommentArgs,
   IUpdateCommentScoreArgs,
 } from "../models/comments";
 import { IApolloContext } from "../models/context";
@@ -11,13 +13,15 @@ import { Direction } from "../models/enums";
 import {
   handleAuthenticationError,
   handleError,
-  throwError,
+  throwForbiddenError,
 } from "../utils/errors";
 import { getScore } from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreateCommentDetails,
+  validateDeleteCommentArgs,
   validateGetComments,
+  validateUpdateCommentArgs,
   validateUpdateCommentScore,
 } from "../validations/comments";
 
@@ -47,7 +51,7 @@ export default class CommentsController implements ICommentsController {
     _: unknown,
     args: ICreateCommentArgs,
     context: Context<IApolloContext>
-  ) => {
+  ): Promise<Comment | Error> => {
     handleAuthenticationError(context);
     validateCreateCommentDetails(args);
 
@@ -62,7 +66,77 @@ export default class CommentsController implements ICommentsController {
       });
       return comment;
     } catch (error) {
-      return handleError(error);
+      return handleError(error as Error);
+    }
+  };
+
+  /**
+   * update comment
+   */
+  public updateComment = async (
+    _: unknown,
+    args: IUpdateCommentArgs,
+    context: Context<IApolloContext>
+  ): Promise<Comment | Error> => {
+    handleAuthenticationError(context);
+    validateUpdateCommentArgs(args);
+
+    try {
+      const comment = await prisma.comment.findUniqueOrThrow({
+        where: {
+          id: args.commentId,
+        },
+      });
+
+      if (comment.authorId !== context.currentUser.id) {
+        throwForbiddenError();
+      }
+
+      return await prisma.comment.update({
+        where: {
+          id: args.commentId,
+        },
+        data: {
+          content: args.content,
+        },
+      });
+    } catch (error) {
+      return handleError(error as Error);
+    }
+  };
+
+  /**
+   * delete comment
+   */
+  public deleteComment = async (
+    _: unknown,
+    args: IDeleteCommentArgs,
+    context: Context<IApolloContext>
+  ): Promise<Comment | Error> => {
+    handleAuthenticationError(context);
+    validateDeleteCommentArgs(args);
+
+    try {
+      const comment = await prisma.comment.findUniqueOrThrow({
+        where: {
+          id: args.commentId,
+        },
+      });
+
+      if (comment.authorId !== context.currentUser.id) {
+        throwForbiddenError();
+      }
+
+      return await prisma.comment.update({
+        where: {
+          id: args.commentId,
+        },
+        data: {
+          deleted: true,
+        },
+      });
+    } catch (error) {
+      return handleError(error as Error);
     }
   };
 
@@ -70,7 +144,7 @@ export default class CommentsController implements ICommentsController {
     _: unknown,
     args: IUpdateCommentScoreArgs,
     context: Context<IApolloContext>
-  ): Promise<Comment> => {
+  ): Promise<Comment | Error> => {
     handleAuthenticationError(context);
     validateUpdateCommentScore(args);
 
@@ -135,7 +209,7 @@ export default class CommentsController implements ICommentsController {
         },
       });
     } catch (error) {
-      return handleError(error);
+      return handleError(error as Error);
     }
   };
 }

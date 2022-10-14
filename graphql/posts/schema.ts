@@ -44,6 +44,8 @@ export const typeDef = gql`
       type: PostType!
       communityId: String!
     ): Post!
+    updatePost(content: String!): Post!
+    deletePost(postId: String!): Post!
     updatePostScore(postId: String!, direction: Direction!): Post!
   }
 `;

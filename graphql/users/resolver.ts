@@ -1,6 +1,7 @@
 import UsersController from "../../controllers/users";
 
-const { allUsers, registerUser, loginUser } = new UsersController();
+const { allUsers, registerUser, loginUser, updateLoggedInUser } =
+  new UsersController();
 
 export const resolver = {
   Query: {
@@ -10,5 +11,6 @@ export const resolver = {
   Mutation: {
     registerUser: registerUser,
     loginUser: loginUser,
+    updateLoggedInUser: updateLoggedInUser,
   },
 };

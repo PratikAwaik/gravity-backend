@@ -1,5 +1,8 @@
 import { UserInputError } from "apollo-server";
-import { ICreateCommunityArgs } from "../models/community";
+import {
+  ICreateCommunityArgs,
+  IUpdateCommunityArgs,
+} from "../models/community";
 import { throwError } from "../utils/errors";
 
 export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
@@ -18,5 +21,11 @@ export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
       UserInputError,
       "Description of the community should not be less than 10 characters"
     );
+  }
+};
+
+export const validateUpdateCommunityArgs = (args: IUpdateCommunityArgs) => {
+  if (!args.communityId) {
+    throwError(UserInputError, "community_id is required");
   }
 };

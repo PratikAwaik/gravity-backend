@@ -1,7 +1,9 @@
 import { UserInputError } from "apollo-server-core";
 import {
   ICreateCommentArgs,
+  IDeleteCommentArgs,
   IGetCommentsArgs,
+  IUpdateCommentArgs,
   IUpdateCommentScoreArgs,
 } from "../models/comments";
 import { throwError } from "../utils/errors";
@@ -17,6 +19,20 @@ export const validateCreateCommentDetails = (args: ICreateCommentArgs) => {
     throwError(UserInputError, "Content should not be empty");
   } else if (!args.postId) {
     throwError(UserInputError, "post_id should not be empty");
+  }
+};
+
+export const validateUpdateCommentArgs = (args: IUpdateCommentArgs) => {
+  if (args.commentId) {
+    throwError(UserInputError, "comment_id is required");
+  } else if (!args.content) {
+    throwError(UserInputError, "Content should not be empty");
+  }
+};
+
+export const validateDeleteCommentArgs = (args: IDeleteCommentArgs) => {
+  if (!args.commentId) {
+    throwError(UserInputError, "comment_id is required");
   }
 };
 

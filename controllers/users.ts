@@ -4,16 +4,24 @@ import bcrypt from "bcryptjs";
 import {
   validateLoginUserDetails,
   validateRegisterUserDetails,
+  validateUpdateUserArgs,
 } from "../validations/users";
-import { handleError, throwError } from "../utils/errors";
+import {
+  handleAuthenticationError,
+  handleError,
+  throwError,
+} from "../utils/errors";
 import { UserInputError } from "apollo-server";
 import { User } from "@prisma/client";
 import {
   ILoginUserArgs,
   IRegisterUserArgs,
+  IUpdateUserArgs,
   IUsersController,
   UserWithToken,
 } from "../models/users";
+import { Context } from "apollo-server-core";
+import { IApolloContext } from "../models/context";
 
 export default class UserController implements IUsersController {
   /**
@@ -29,7 +37,7 @@ export default class UserController implements IUsersController {
   public registerUser = async (
     _: unknown,
     args: IRegisterUserArgs
-  ): Promise<UserWithToken | void> => {
+  ): Promise<UserWithToken | Error> => {
     validateRegisterUserDetails(args);
     try {
       const passwordHash = await bcrypt.hash(args.password, 10);
@@ -47,7 +55,7 @@ export default class UserController implements IUsersController {
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
       return { ...user, token: { value: token } };
     } catch (error: any) {
-      return handleError(error);
+      return handleError(error as Error);
     }
   };
 
@@ -55,11 +63,14 @@ export default class UserController implements IUsersController {
    * login user
    */
   // * return type should be UserWithToken
-  public loginUser = async (_: unknown, args: ILoginUserArgs): Promise<any> => {
+  public loginUser = async (
+    _: unknown,
+    args: ILoginUserArgs
+  ): Promise<any | Error> => {
     validateLoginUserDetails(args);
 
     try {
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: {
           username: args.username,
         },
@@ -82,7 +93,32 @@ export default class UserController implements IUsersController {
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
       return { ...user, token: { value: token } };
     } catch (error) {
-      return handleError(error);
+      return handleError(error as Error);
+    }
+  };
+
+  /**
+   * update logged in user
+   */
+  public updateLoggedInUser = async (
+    _: unknown,
+    args: IUpdateUserArgs,
+    context: Context<IApolloContext>
+  ): Promise<User | Error> => {
+    handleAuthenticationError(context);
+    validateUpdateUserArgs(args);
+
+    try {
+      return await prisma.user.update({
+        where: {
+          id: context.currentUser.id,
+        },
+        data: {
+          profilePic: args.profilePic,
+        },
+      });
+    } catch (error) {
+      return handleError(error as Error);
     }
   };
 }

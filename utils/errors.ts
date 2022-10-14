@@ -1,6 +1,7 @@
 import { Prisma, User } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server";
 import { Context } from "apollo-server-core";
+import { GraphQLError } from "graphql";
 import { IApolloContext } from "../models/context";
 
 export const throwError = (
@@ -11,7 +12,16 @@ export const throwError = (
   throw new errorType(errorMessage, options);
 };
 
-export const handleError = (error: any) => {
+export const throwForbiddenError = () => {
+  throwError(GraphQLError, "You are not authorized to perform this action", {
+    extensions: {
+      code: "FORBIDDEN",
+      http: { status: 403 },
+    },
+  });
+};
+
+export const handleError = (error: Error) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // unique constraint error
     switch (error.code) {

@@ -1,5 +1,10 @@
 import { UserInputError } from "apollo-server";
-import { ICreatePostArgs, IUpdatePostScoreArgs } from "../models/posts";
+import {
+  ICreatePostArgs,
+  IDeletePostArgs,
+  IUpdatePostArgs,
+  IUpdatePostScoreArgs,
+} from "../models/posts";
 import { throwError } from "../utils/errors";
 
 export const validateCreatePostDetails = (args: ICreatePostArgs) => {
@@ -17,10 +22,24 @@ export const validateCreatePostDetails = (args: ICreatePostArgs) => {
   }
 };
 
+export const validateUpdatePostArgs = (args: IUpdatePostArgs) => {
+  if (!args.postId) {
+    throwError(UserInputError, "post_id is required");
+  } else if (!args.content) {
+    throwError(UserInputError, "content is required");
+  }
+};
+
 export const validateUpdatePostScore = (args: IUpdatePostScoreArgs) => {
   if (!args.postId) {
     throwError(UserInputError, "post_id is required");
   } else if (!args.direction) {
     throwError(UserInputError, "direction is required");
+  }
+};
+
+export const validateDeletePostArgs = (args: IDeletePostArgs) => {
+  if (!args.postId) {
+    throwError(UserInputError, "post_id is required");
   }
 };

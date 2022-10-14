@@ -1,4 +1,6 @@
 import { User } from "@prisma/client";
+import { Context } from "apollo-server-core";
+import { IApolloContext } from "./context";
 
 export interface ILoginUserArgs {
   username: string;
@@ -15,11 +17,20 @@ export interface UserWithToken extends User {
   };
 }
 
+export interface IUpdateUserArgs {
+  profilePic: string;
+}
+
 export interface IUsersController {
   allUsers(): Promise<User[]>;
   registerUser(
     _: unknown,
     args: IRegisterUserArgs
-  ): Promise<UserWithToken | void>;
+  ): Promise<UserWithToken | Error>;
   loginUser(_: unknown, args: ILoginUserArgs): Promise<any>;
+  updateLoggedInUser(
+    _: unknown,
+    args: IUpdateUserArgs,
+    context: Context<IApolloContext>
+  ): Promise<User | Error>;
 }

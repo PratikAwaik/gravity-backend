@@ -7,11 +7,17 @@ export interface ICreateCommunityArgs {
   description: string;
 }
 
+export interface IUpdateCommunityArgs {
+  communityId: string;
+  description?: string;
+  icon?: string;
+}
+
 export interface ICommunityController {
   getAllCommunities(): Promise<Community[]>;
   createCommunity(
     _: unknown,
     args: ICreateCommunityArgs,
     context: Context<IApolloContext>
-  ): Promise<Community | void>;
+  ): Promise<Community | Error>;
 }

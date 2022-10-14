@@ -1,5 +1,9 @@
 import { UserInputError } from "apollo-server";
-import { ILoginUserArgs, IRegisterUserArgs } from "../models/users";
+import {
+  ILoginUserArgs,
+  IRegisterUserArgs,
+  IUpdateUserArgs,
+} from "../models/users";
 import { throwError } from "../utils/errors";
 
 export const validateRegisterUserDetails = (args: IRegisterUserArgs) => {
@@ -27,5 +31,11 @@ export const validateLoginUserDetails = (args: ILoginUserArgs) => {
     );
   } else if (args?.username?.length > 21) {
     throwError(UserInputError, "Username cannot be more than 21 characters");
+  }
+};
+
+export const validateUpdateUserArgs = (args: IUpdateUserArgs) => {
+  if (!args.profilePic) {
+    throwError(UserInputError, "Profile Picture is required");
   }
 };

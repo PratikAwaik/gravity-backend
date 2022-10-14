@@ -1,21 +1,25 @@
 import { Post, PostScore } from "@prisma/client";
-import { Context, UserInputError } from "apollo-server-core";
+import { Context } from "apollo-server-core";
 import { IApolloContext } from "../models/context";
 import { Direction } from "../models/enums";
 import {
   ICreatePostArgs,
+  IDeletePostArgs,
   IPostsController,
+  IUpdatePostArgs,
   IUpdatePostScoreArgs,
 } from "../models/posts";
 import {
   handleAuthenticationError,
   handleError,
-  throwError,
+  throwForbiddenError,
 } from "../utils/errors";
 import { getScore } from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreatePostDetails,
+  validateDeletePostArgs,
+  validateUpdatePostArgs,
   validateUpdatePostScore,
 } from "../validations/posts";
 
@@ -39,7 +43,7 @@ export default class PostsController implements IPostsController {
     _: unknown,
     args: ICreatePostArgs,
     context: Context<IApolloContext>
-  ): Promise<Post | void> => {
+  ): Promise<Post | Error> => {
     handleAuthenticationError(context);
     validateCreatePostDetails(args);
 
@@ -55,7 +59,77 @@ export default class PostsController implements IPostsController {
       });
       return post;
     } catch (error) {
-      return handleError(error);
+      return handleError(error as Error);
+    }
+  };
+
+  /**
+   * update post
+   */
+  public updatePost = async (
+    _: unknown,
+    args: IUpdatePostArgs,
+    context: Context<IApolloContext>
+  ): Promise<Post | Error> => {
+    handleAuthenticationError(context);
+    validateUpdatePostArgs(args);
+
+    try {
+      const post = await prisma.post.findUniqueOrThrow({
+        where: {
+          id: args.postId,
+        },
+      });
+
+      if (post.authorId !== context.currentUser.id) {
+        throwForbiddenError();
+      }
+
+      return await prisma.post.update({
+        where: {
+          id: args.postId,
+        },
+        data: {
+          content: args.content,
+        },
+      });
+    } catch (error) {
+      return handleError(error as Error);
+    }
+  };
+
+  /**
+   * delete post
+   */
+  public deletePost = async (
+    _: unknown,
+    args: IDeletePostArgs,
+    context: Context<IApolloContext>
+  ): Promise<Post | Error> => {
+    handleAuthenticationError(context);
+    validateDeletePostArgs(args);
+
+    try {
+      const post = await prisma.post.findUniqueOrThrow({
+        where: {
+          id: args.postId,
+        },
+      });
+
+      if (post.authorId !== context.currentUser.id) {
+        throwForbiddenError();
+      }
+
+      return await prisma.post.update({
+        where: {
+          id: args.postId,
+        },
+        data: {
+          deleted: true,
+        },
+      });
+    } catch (error) {
+      return handleError(error as Error);
     }
   };
 
@@ -66,7 +140,7 @@ export default class PostsController implements IPostsController {
     _: unknown,
     args: IUpdatePostScoreArgs,
     context: Context<IApolloContext>
-  ): Promise<Post> => {
+  ): Promise<Post | Error> => {
     handleAuthenticationError(context);
     validateUpdatePostScore(args);
 
@@ -127,7 +201,7 @@ export default class PostsController implements IPostsController {
         },
       });
     } catch (error) {
-      return handleError(error);
+      return handleError(error as Error);
     }
   };
 }
