@@ -26,7 +26,7 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    allComments(postId: String!): [Comment]!
+    allComments(postId: String!, parentId: String): [Comment]!
   }
 
   extend type Mutation {

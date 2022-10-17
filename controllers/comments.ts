@@ -36,10 +36,19 @@ export default class CommentsController implements ICommentsController {
     validateGetComments(args);
     return await prisma.comment.findMany({
       where: {
-        postId: args.postId,
+        AND: [{ postId: args.postId }, { parentId: args.parentId ?? null }],
       },
       include: {
         author: true,
+        children: {
+          include: {
+            children: {
+              include: {
+                children: true,
+              },
+            },
+          },
+        },
       },
     });
   };

@@ -5,6 +5,7 @@ import { Direction } from "./enums";
 
 export interface IGetCommentsArgs {
   postId: string;
+  parentId: string | null;
 }
 
 export interface ICreateCommentArgs {
