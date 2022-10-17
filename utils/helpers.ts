@@ -1,7 +1,5 @@
-import { Comment, CommentScore, Post, PostScore, prisma } from "@prisma/client";
-import { Context } from "apollo-server-core";
+import { Comment, CommentScore, Post, PostScore } from "@prisma/client";
 import { IUpdateCommentScoreArgs } from "../models/comments";
-import { IApolloContext } from "../models/context";
 import { Direction } from "../models/enums";
 import { IUpdatePostScoreArgs } from "../models/posts";
 
