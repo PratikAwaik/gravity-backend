@@ -13,7 +13,7 @@ datasource db {
 model User {
   id                   String         @id @default(uuid())
   username             String         @unique @db.VarChar(256)
-  prefixedUsername     String         @unique @map("prefixed_username") @db.VarChar(256)
+  prefixedName         String         @unique @map("prefixed_name") @db.VarChar(256)
   email                String         @unique
   password             String
   profilePic           String?        @map("profile_pic")
@@ -52,20 +52,21 @@ enum PostType {
 }
 
 model Post {
-  id          String      @id @default(uuid())
-  title       String      @db.VarChar(300)
-  content     String
-  authorId    String      @map("author_id")
-  author      User        @relation(fields: [authorId], references: [id])
-  communityId String      @map("community_id")
-  community   Community   @relation(fields: [communityId], references: [id])
-  type        PostType
-  comments    Comment[]
-  deleted     Boolean     @default(false)
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
-  postScores  PostScore[]
-  score       Int         @default(0)
+  id            String      @id @default(uuid())
+  title         String      @db.VarChar(300)
+  content       String
+  authorId      String      @map("author_id")
+  author        User        @relation(fields: [authorId], references: [id])
+  communityId   String      @map("community_id")
+  community     Community   @relation(fields: [communityId], references: [id])
+  type          PostType
+  comments      Comment[]
+  deleted       Boolean     @default(false)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  postScores    PostScore[]
+  commentsCount Int         @default(0) @map("comments_count")
+  score         Int         @default(0)
 
   @@map("posts")
 }

@@ -22,6 +22,7 @@ export const typeDef = gql`
     comments: [Comment]!
     postScores: [PostScore]!
     score: Int!
+    commentsCount: Int!
     deleted: Boolean!
     createdAt: String!
     updatedAt: String!

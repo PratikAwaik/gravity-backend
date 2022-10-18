@@ -20,6 +20,7 @@ export interface IUpdateCommentArgs {
 }
 
 export interface IDeleteCommentArgs {
+  postId: string;
   commentId: string;
 }
 

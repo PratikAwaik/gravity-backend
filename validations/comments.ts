@@ -31,7 +31,9 @@ export const validateUpdateCommentArgs = (args: IUpdateCommentArgs) => {
 };
 
 export const validateDeleteCommentArgs = (args: IDeleteCommentArgs) => {
-  if (!args.commentId) {
+  if (!args.postId) {
+    throwError(UserInputError, "post_id is required");
+  } else if (!args.commentId) {
     throwError(UserInputError, "comment_id is required");
   }
 };

@@ -8,7 +8,7 @@ export const typeDef = gql`
   type User {
     id: ID!
     username: String!
-    prefixedUsername: String!
+    prefixedName: String!
     email: String!
     password: String!
     profilePic: String

@@ -73,6 +73,17 @@ export default class CommentsController implements ICommentsController {
           parentId: args.parentId || null,
         },
       });
+
+      await prisma.post.update({
+        where: {
+          id: args.postId,
+        },
+        data: {
+          commentsCount: {
+            increment: 1,
+          },
+        },
+      });
       return comment;
     } catch (error) {
       return handleError(error as Error);
@@ -136,7 +147,7 @@ export default class CommentsController implements ICommentsController {
         throwForbiddenError();
       }
 
-      return await prisma.comment.update({
+      const deletedComment = await prisma.comment.update({
         where: {
           id: args.commentId,
         },
@@ -144,6 +155,18 @@ export default class CommentsController implements ICommentsController {
           deleted: true,
         },
       });
+
+      await prisma.post.update({
+        where: {
+          id: args.postId,
+        },
+        data: {
+          commentsCount: {
+            decrement: 1,
+          },
+        },
+      });
+      return deletedComment;
     } catch (error) {
       return handleError(error as Error);
     }
