@@ -48,7 +48,7 @@ model Community {
 enum PostType {
   TEXT
   MEDIA
-  LINK
+  ARTICLE
 }
 
 model Post {
