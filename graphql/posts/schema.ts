@@ -31,7 +31,7 @@ export const typeDef = gql`
   enum PostType {
     TEXT
     MEDIA
-    LINK
+    ARTICLE
   }
 
   extend type Query {
