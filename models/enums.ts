@@ -1,7 +1,7 @@
 export enum PostType {
   TEXT = "TEXT",
   MEDIA = "MEDIA",
-  LINK = "LINK",
+  ARTICLE = "ARTICLE",
 }
 
 export enum Direction {

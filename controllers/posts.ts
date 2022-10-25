@@ -27,11 +27,23 @@ export default class PostsController implements IPostsController {
   /**
    * get all posts
    */
-  public getAllPosts = async (): Promise<Post[]> => {
+  public getAllPosts = async (
+    _: unknown,
+    __: unknown,
+    context: Context<IApolloContext>
+  ): Promise<Post[]> => {
     return await prisma.post.findMany({
       include: {
         author: true,
         community: true,
+        postScores: {
+          where: {
+            userId: context.currentUser?.id,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
   };
@@ -197,7 +209,11 @@ export default class PostsController implements IPostsController {
           }),
         },
         include: {
-          postScores: true,
+          postScores: {
+            where: {
+              userId: context.currentUser.id,
+            },
+          },
         },
       });
     } catch (error) {

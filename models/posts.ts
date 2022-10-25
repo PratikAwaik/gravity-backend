@@ -24,7 +24,11 @@ export interface IUpdatePostScoreArgs {
 }
 
 export interface IPostsController {
-  getAllPosts(): Promise<Post[]>;
+  getAllPosts(
+    _: unknown,
+    __: unknown,
+    context: Context<IApolloContext>
+  ): Promise<Post[]>;
   createPost(
     _: unknown,
     args: ICreatePostArgs,
