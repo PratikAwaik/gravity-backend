@@ -23,6 +23,7 @@ export const typeDef = gql`
 
   extend type Query {
     allUsers: [User]!
+    userSubscriptions: [Community]!
   }
 
   extend type Mutation {

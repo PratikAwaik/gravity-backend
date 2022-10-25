@@ -39,6 +39,7 @@ model Community {
   user         User     @relation("moderated_communities", fields: [adminId], references: [id])
   posts        Post[]
   members      User[]   @relation("joined_communities")
+  membersCount Int      @default(0) @map("members_count")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 

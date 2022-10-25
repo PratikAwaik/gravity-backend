@@ -121,4 +121,26 @@ export default class UserController implements IUsersController {
       return handleError(error as Error);
     }
   };
+
+  /**
+   * get user subscriptions
+   */
+  public getUserSubscriptions = async (
+    _: unknown,
+    __: unknown,
+    context: Context<IApolloContext>
+  ) => {
+    handleAuthenticationError(context);
+
+    return await prisma.user
+      .findUnique({
+        where: {
+          id: context.currentUser.id,
+        },
+        select: {
+          joinedCommunities: true,
+        },
+      })
+      .joinedCommunities();
+  };
 }

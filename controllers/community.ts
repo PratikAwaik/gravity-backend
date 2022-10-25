@@ -54,6 +54,7 @@ export default class CommunityController implements ICommunityController {
               id: context.currentUser.id,
             },
           },
+          membersCount: 1,
         },
       });
       return community;

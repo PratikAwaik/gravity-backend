@@ -10,6 +10,7 @@ export const typeDef = gql`
     adminId: String!
     posts: [Post]!
     members: [User]!
+    membersCount: Int!
     createdAt: String
     updatedAt: String
   }
