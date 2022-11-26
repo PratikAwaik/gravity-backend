@@ -1,4 +1,4 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server";
 import { Context } from "apollo-server-core";
 import { GraphQLError } from "graphql";
@@ -6,7 +6,7 @@ import { IApolloContext } from "../models/context";
 
 export const throwError = (
   errorType: any,
-  errorMessage: string,
+  errorMessage: any,
   options?: any
 ) => {
   throw new errorType(errorMessage, options);
@@ -26,8 +26,14 @@ export const handleError = (error: Error) => {
     // unique constraint error
     switch (error.code) {
       case "P2002":
-        const { target } = error.meta as Record<string, string>;
-        return throwError(UserInputError, `${target[0]} should be unique.`);
+        const { target } = error.meta as Record<string, any>;
+        return throwError(
+          UserInputError,
+          `${
+            target[0][0].toUpperCase() + target[0].slice(1)
+          } should be unique.`,
+          { field: target[0] }
+        );
       default:
         return error;
     }
