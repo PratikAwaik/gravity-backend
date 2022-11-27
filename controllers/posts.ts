@@ -68,7 +68,12 @@ export default class PostsController implements IPostsController {
           type: args.type,
           communityId: args.communityId,
         },
+        include: {
+          author: true,
+          community: true,
+        },
       });
+
       return post;
     } catch (error) {
       return handleError(error as Error);
