@@ -1,11 +1,12 @@
 import { Post } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
-import { Direction, PostType } from "./enums";
+import { Direction, MediaType, PostType } from "./enums";
 export interface ICreatePostArgs {
   title: string;
-  content: string;
+  content: any;
   type: PostType;
+  mediaType: MediaType;
   communityId: string;
 }
 

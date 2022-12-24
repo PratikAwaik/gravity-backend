@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { AuthenticationError, UserInputError } from "apollo-server";
-import { Context } from "apollo-server-core";
+import { ApolloError, Context } from "apollo-server-core";
 import { GraphQLError } from "graphql";
 import { IApolloContext } from "../models/context";
 
@@ -21,7 +21,8 @@ export const throwForbiddenError = () => {
   });
 };
 
-export const handleError = (error: Error) => {
+export const handleError = (error: Error): any => {
+  console.error(error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // unique constraint error
     switch (error.code) {
@@ -37,6 +38,8 @@ export const handleError = (error: Error) => {
       default:
         return error;
     }
+  } else if (error instanceof ApolloError) {
+    return "Something Went Wrong! Please try again later.";
   } else return error;
 };
 

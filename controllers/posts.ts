@@ -1,7 +1,7 @@
-import { Post, PostScore } from "@prisma/client";
+import { Post } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "../models/context";
-import { Direction } from "../models/enums";
+import { Direction, PostType } from "../models/enums";
 import {
   ICreatePostArgs,
   IDeletePostArgs,
@@ -9,6 +9,7 @@ import {
   IUpdatePostArgs,
   IUpdatePostScoreArgs,
 } from "../models/posts";
+import cloudinary from "../utils/cloudinary";
 import {
   handleAuthenticationError,
   handleError,
@@ -22,6 +23,7 @@ import {
   validateUpdatePostArgs,
   validateUpdatePostScore,
 } from "../validations/posts";
+import ogs from "open-graph-scraper";
 
 export default class PostsController implements IPostsController {
   /**
@@ -59,14 +61,46 @@ export default class PostsController implements IPostsController {
     handleAuthenticationError(context);
     validateCreatePostDetails(args);
 
+    let mediaPayload: {
+      content: string;
+      mediaType: any;
+    } = {
+      content: "",
+      mediaType: null,
+    };
+
+    let articleImage;
+
     try {
+      if (args.type === PostType.MEDIA) {
+        const uploadedMedia = await cloudinary.uploader.upload(args.content, {
+          upload_prest: process.env.CLOUDINARY_UPLOAD_PRESET,
+          folder: "gravityuploads",
+          resource_type: "auto",
+        });
+        mediaPayload.content = uploadedMedia.secure_url;
+        mediaPayload.mediaType = uploadedMedia.resource_type;
+      } else if (args.type === PostType.ARTICLE) {
+        const options = {
+          url: args.content,
+        };
+        const { result } = await ogs(options);
+        articleImage = (result as any).ogImage?.url;
+      }
+
       const post = await prisma.post.create({
         data: {
           title: args.title,
-          content: args.content,
+          content:
+            args.type === PostType.MEDIA ? mediaPayload.content : args.content,
           authorId: context.currentUser.id,
           type: args.type,
+          mediaType:
+            args.type === PostType.MEDIA
+              ? mediaPayload.mediaType
+              : args.mediaType,
           communityId: args.communityId,
+          articleImage: articleImage,
         },
         include: {
           author: true,
@@ -75,6 +109,7 @@ export default class PostsController implements IPostsController {
       });
 
       return post;
+      return {} as Post;
     } catch (error) {
       return handleError(error as Error);
     }

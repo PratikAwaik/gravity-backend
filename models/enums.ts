@@ -9,3 +9,8 @@ export enum Direction {
   UNVOTE = "UNVOTE",
   DOWNVOTE = "DOWNVOTE",
 }
+
+export enum MediaType {
+  IMAGE = "image",
+  VIDEO = "video",
+}

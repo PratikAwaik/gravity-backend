@@ -1,4 +1,5 @@
 import { UserInputError } from "apollo-server";
+import { PostType } from "../models/enums";
 import {
   ICreatePostArgs,
   IDeletePostArgs,
@@ -10,7 +11,7 @@ import { throwError } from "../utils/errors";
 export const validateCreatePostDetails = (args: ICreatePostArgs) => {
   if (args?.title?.length < 3) {
     throwError(UserInputError, "Post Title should be more than 3 characters");
-  } else if (args?.content?.length < 3) {
+  } else if (args.type === PostType.ARTICLE && args?.content?.length < 3) {
     throwError(
       UserInputError,
       "Post Description should be more than 3 characters"

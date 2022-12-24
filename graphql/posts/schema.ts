@@ -19,6 +19,8 @@ export const typeDef = gql`
     communityId: String!
     community: Community!
     type: PostType!
+    mediaType: MediaType
+    articleImage: String
     comments: [Comment]!
     postScores: [PostScore]!
     score: Int!
@@ -32,6 +34,11 @@ export const typeDef = gql`
     TEXT
     MEDIA
     ARTICLE
+  }
+
+  enum MediaType {
+    image
+    video
   }
 
   extend type Query {

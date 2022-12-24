@@ -52,6 +52,11 @@ enum PostType {
   ARTICLE
 }
 
+enum MediaType {
+  image
+  video
+}
+
 model Post {
   id            String      @id @default(uuid())
   title         String      @db.VarChar(300)
@@ -61,6 +66,8 @@ model Post {
   communityId   String      @map("community_id")
   community     Community   @relation(fields: [communityId], references: [id])
   type          PostType
+  mediaType     MediaType?  @map("media_type")
+  articleImage  String?     @map("article_image")
   comments      Comment[]
   deleted       Boolean     @default(false)
   createdAt     DateTime    @default(now()) @map("created_at")
