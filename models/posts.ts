@@ -2,6 +2,11 @@ import { Post } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
 import { Direction, MediaType, PostType } from "./enums";
+
+export interface IGetPostByIdArgs {
+  postId: string;
+}
+
 export interface ICreatePostArgs {
   title: string;
   content: any;
@@ -30,6 +35,11 @@ export interface IPostsController {
     __: unknown,
     context: Context<IApolloContext>
   ): Promise<Post[]>;
+  getPostById(
+    _: unknown,
+    args: IGetPostByIdArgs,
+    context: Context<IApolloContext>
+  ): Promise<Post | Error>;
   createPost(
     _: unknown,
     args: ICreatePostArgs,

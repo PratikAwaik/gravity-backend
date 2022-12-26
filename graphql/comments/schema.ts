@@ -18,7 +18,7 @@ export const typeDef = gql`
     postId: String!
     parentId: String
     children: [Comment]
-    commentScores: [CommentScore]!
+    commentScores: [CommentScore]
     score: Int!
     deleted: Boolean!
     createdAt: String!

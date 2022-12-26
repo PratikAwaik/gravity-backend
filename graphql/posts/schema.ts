@@ -22,7 +22,7 @@ export const typeDef = gql`
     mediaType: MediaType
     articleImage: String
     comments: [Comment]!
-    postScores: [PostScore]!
+    postScores: [PostScore]
     score: Int!
     commentsCount: Int!
     deleted: Boolean!
@@ -42,7 +42,8 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    allPosts: [Post]!
+    allPosts(cursor: Int): [Post]!
+    getPostById(postId: String!): Post!
   }
 
   extend type Mutation {

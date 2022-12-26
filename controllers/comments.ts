@@ -42,8 +42,10 @@ export default class CommentsController implements ICommentsController {
         author: true,
         children: {
           include: {
+            author: true,
             children: {
               include: {
+                author: true,
                 children: true,
               },
             },
@@ -71,6 +73,14 @@ export default class CommentsController implements ICommentsController {
           postId: args.postId,
           authorId: context.currentUser.id,
           parentId: args.parentId || null,
+        },
+        include: {
+          author: true,
+          commentScores: {
+            where: {
+              userId: context.currentUser.id,
+            },
+          },
         },
       });
 
