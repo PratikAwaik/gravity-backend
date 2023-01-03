@@ -30,7 +30,11 @@ export interface IUpdateCommentScoreArgs {
 }
 
 export interface ICommentsController {
-  getComments(_: unknown, args: IGetCommentsArgs): Promise<Comment[]>;
+  getComments(
+    _: unknown,
+    args: IGetCommentsArgs,
+    context: Context<IApolloContext>
+  ): Promise<Comment[]>;
   createComment(
     _: unknown,
     args: ICreateCommentArgs,

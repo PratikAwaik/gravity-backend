@@ -15,7 +15,7 @@ import {
   handleError,
   throwForbiddenError,
 } from "../utils/errors";
-import { getScore } from "../utils/helpers";
+import { getInfiniteNestedCommentsQuery, getScore } from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreateCommentDetails,
@@ -31,27 +31,35 @@ export default class CommentsController implements ICommentsController {
    */
   public getComments = async (
     _: unknown,
-    args: IGetCommentsArgs
+    args: IGetCommentsArgs,
+    context: Context<IApolloContext>
   ): Promise<Comment[]> => {
     validateGetComments(args);
+    const query = {
+      include: {
+        author: true,
+        commentScores: {
+          where: {
+            userId: context.currentUser?.id,
+          },
+        },
+        children: {},
+      },
+    };
+
+    const newQuery = getInfiniteNestedCommentsQuery(
+      query,
+      JSON.parse(JSON.stringify(query))
+    );
+
     return await prisma.comment.findMany({
       where: {
         AND: [{ postId: args.postId }, { parentId: args.parentId ?? null }],
       },
-      include: {
-        author: true,
-        children: {
-          include: {
-            author: true,
-            children: {
-              include: {
-                author: true,
-                children: true,
-              },
-            },
-          },
-        },
+      orderBy: {
+        createdAt: "asc",
       },
+      ...newQuery,
     });
   };
 
@@ -81,6 +89,7 @@ export default class CommentsController implements ICommentsController {
               userId: context.currentUser.id,
             },
           },
+          children: true,
         },
       });
 

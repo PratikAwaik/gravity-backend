@@ -25,6 +25,7 @@ export const handleError = (error: Error): any => {
   console.error(error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // unique constraint error
+    console.log("prisma");
     switch (error.code) {
       case "P2002":
         const { target } = error.meta as Record<string, any>;
@@ -39,8 +40,13 @@ export const handleError = (error: Error): any => {
         return error;
     }
   } else if (error instanceof ApolloError) {
-    return "Something Went Wrong! Please try again later.";
-  } else return error;
+    if (error instanceof UserInputError) {
+      return error;
+    } else
+      return new ApolloError("Something Went Wrong! Please try again later.");
+  }
+
+  return error;
 };
 
 export const handleAuthenticationError = (context: Context<IApolloContext>) => {

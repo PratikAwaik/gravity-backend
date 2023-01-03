@@ -1,5 +1,7 @@
 import { Comment, CommentScore, Post, PostScore } from "@prisma/client";
+import { Context } from "apollo-server-core";
 import { IUpdateCommentScoreArgs } from "../models/comments";
+import { IApolloContext } from "../models/context";
 import { Direction } from "../models/enums";
 import { IUpdatePostScoreArgs } from "../models/posts";
 
@@ -56,4 +58,15 @@ export const getScore = (
     }
   }
   return 0;
+};
+
+export const getInfiniteNestedCommentsQuery = (
+  query: any,
+  initialQuery: any,
+  depth = 20
+): any => {
+  if (depth === 0) return query;
+  const newQuery = JSON.parse(JSON.stringify(initialQuery));
+  newQuery.include.children = query;
+  return getInfiniteNestedCommentsQuery(newQuery, initialQuery, depth - 1);
 };

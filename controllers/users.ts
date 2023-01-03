@@ -81,7 +81,7 @@ export default class UserController implements IUsersController {
         : false;
 
       if (!isPasswordCorrect) {
-        throwError(UserInputError, "Invalid username or password", {
+        return throwError(UserInputError, "Invalid username or password", {
           invalidArgs: args,
         });
       }
