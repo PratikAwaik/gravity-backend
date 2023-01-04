@@ -1,6 +1,5 @@
 import { Community } from "@prisma/client";
 import { Context } from "apollo-server-core";
-import { GraphQLError } from "graphql";
 import {
   ICommunityController,
   ICreateCommunityArgs,
@@ -10,7 +9,6 @@ import { IApolloContext } from "../models/context";
 import {
   handleAuthenticationError,
   handleError,
-  throwError,
   throwForbiddenError,
 } from "../utils/errors";
 import prisma from "../utils/prisma";
