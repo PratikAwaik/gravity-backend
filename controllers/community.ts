@@ -55,6 +55,7 @@ export default class CommunityController implements ICommunityController {
             },
           },
           membersCount: 1,
+          updatedAt: null,
         },
       });
       return community;

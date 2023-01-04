@@ -26,6 +26,6 @@ export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
 
 export const validateUpdateCommunityArgs = (args: IUpdateCommunityArgs) => {
   if (!args.communityId) {
-    throwError(UserInputError, "community_id is required");
+    throwError(UserInputError, "communityId is required");
   }
 };

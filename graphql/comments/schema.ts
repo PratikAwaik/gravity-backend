@@ -32,7 +32,7 @@ export const typeDef = gql`
   extend type Mutation {
     createComment(content: String!, postId: String!, parentId: String): Comment!
     updateComment(commentId: String!, content: String!): Comment!
-    deleteComment(commentId: String!): Comment!
+    deleteComment(commentId: String!, postId: String!): Comment!
     updateCommentScore(commentId: String!, direction: Direction!): Comment!
   }
 `;

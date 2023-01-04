@@ -22,7 +22,7 @@ model User {
   posts                Post[]
   comments             Comment[]
   createdAt            DateTime       @default(now()) @map("created_at")
-  updatedAt            DateTime       @updatedAt @map("updated_at")
+  updatedAt            DateTime?      @updatedAt @map("updated_at")
   PostScore            PostScore[]
   CommentScore         CommentScore[]
 
@@ -30,18 +30,18 @@ model User {
 }
 
 model Community {
-  id           String   @id @default(uuid())
-  name         String   @unique @db.VarChar(256)
-  prefixedName String   @unique @map("prefixed_name") @db.VarChar(256)
+  id           String    @id @default(uuid())
+  name         String    @unique @db.VarChar(256)
+  prefixedName String    @unique @map("prefixed_name") @db.VarChar(256)
   description  String
   icon         String?
-  adminId      String   @map("admin_id")
-  user         User     @relation("moderated_communities", fields: [adminId], references: [id])
+  adminId      String    @map("admin_id")
+  user         User      @relation("moderated_communities", fields: [adminId], references: [id])
   posts        Post[]
-  members      User[]   @relation("joined_communities")
-  membersCount Int      @default(0) @map("members_count")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  members      User[]    @relation("joined_communities")
+  membersCount Int       @default(0) @map("members_count")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
 
   @@map("communities")
 }
@@ -71,7 +71,7 @@ model Post {
   comments      Comment[]
   deleted       Boolean     @default(false)
   createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  updatedAt     DateTime?   @updatedAt @map("updated_at")
   postScores    PostScore[]
   commentsCount Int         @default(0) @map("comments_count")
   score         Int         @default(0)
@@ -91,7 +91,7 @@ model Comment {
   children      Comment[]      @relation("parent_children")
   deleted       Boolean        @default(false)
   createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  updatedAt     DateTime?      @updatedAt @map("updated_at")
   commentScores CommentScore[]
   score         Int            @default(0)
 

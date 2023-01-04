@@ -46,6 +46,7 @@ export default class UserController implements IUsersController {
           ...args,
           password: passwordHash,
           prefixedName: "u/" + args.username,
+          updatedAt: null,
         },
       });
       const userForToken = {

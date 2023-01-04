@@ -25,7 +25,7 @@ export const validateCreatePostDetails = (args: ICreatePostArgs) => {
 
 export const validateUpdatePostArgs = (args: IUpdatePostArgs) => {
   if (!args.postId) {
-    throwError(UserInputError, "post_id is required");
+    throwError(UserInputError, "postId is required");
   } else if (!args.content) {
     throwError(UserInputError, "content is required");
   }
@@ -33,7 +33,7 @@ export const validateUpdatePostArgs = (args: IUpdatePostArgs) => {
 
 export const validateUpdatePostScore = (args: IUpdatePostScoreArgs) => {
   if (!args.postId) {
-    throwError(UserInputError, "post_id is required");
+    throwError(UserInputError, "postId is required");
   } else if (!args.direction) {
     throwError(UserInputError, "direction is required");
   }
@@ -41,6 +41,6 @@ export const validateUpdatePostScore = (args: IUpdatePostScoreArgs) => {
 
 export const validateDeletePostArgs = (args: IDeletePostArgs) => {
   if (!args.postId) {
-    throwError(UserInputError, "post_id is required");
+    throwError(UserInputError, "postId is required");
   }
 };

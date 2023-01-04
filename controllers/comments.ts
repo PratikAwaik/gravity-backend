@@ -81,6 +81,7 @@ export default class CommentsController implements ICommentsController {
           postId: args.postId,
           authorId: context.currentUser.id,
           parentId: args.parentId || null,
+          updatedAt: null,
         },
         include: {
           author: true,

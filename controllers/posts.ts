@@ -133,6 +133,7 @@ export default class PostsController implements IPostsController {
               : args.mediaType,
           communityId: args.communityId,
           articleImage: articleImage,
+          updatedAt: null,
         },
         include: {
           author: true,

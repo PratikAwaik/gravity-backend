@@ -10,7 +10,7 @@ import { throwError } from "../utils/errors";
 
 export const validateGetComments = (args: IGetCommentsArgs) => {
   if (!args.postId) {
-    throwError(UserInputError, "post_id is required");
+    throwError(UserInputError, "postId is required");
   }
 };
 
@@ -18,13 +18,13 @@ export const validateCreateCommentDetails = (args: ICreateCommentArgs) => {
   if (!args.content) {
     throwError(UserInputError, "Content should not be empty");
   } else if (!args.postId) {
-    throwError(UserInputError, "post_id should not be empty");
+    throwError(UserInputError, "postId should not be empty");
   }
 };
 
 export const validateUpdateCommentArgs = (args: IUpdateCommentArgs) => {
-  if (args.commentId) {
-    throwError(UserInputError, "comment_id is required");
+  if (!args.commentId) {
+    throwError(UserInputError, "commentId is required");
   } else if (!args.content) {
     throwError(UserInputError, "Content should not be empty");
   }
@@ -32,9 +32,9 @@ export const validateUpdateCommentArgs = (args: IUpdateCommentArgs) => {
 
 export const validateDeleteCommentArgs = (args: IDeleteCommentArgs) => {
   if (!args.postId) {
-    throwError(UserInputError, "post_id is required");
+    throwError(UserInputError, "postId is required");
   } else if (!args.commentId) {
-    throwError(UserInputError, "comment_id is required");
+    throwError(UserInputError, "commentId is required");
   }
 };
 
