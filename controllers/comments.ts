@@ -212,8 +212,8 @@ export default class CommentsController implements ICommentsController {
       const commentScore = await prisma.commentScore.findFirst({
         where: {
           AND: [
-            { commentId: args.commentId },
             { userId: context.currentUser.id },
+            { commentId: args.commentId },
           ],
         },
       });
@@ -254,10 +254,15 @@ export default class CommentsController implements ICommentsController {
                 id: newCommentScoreEntity?.id,
               },
             },
+            updatedAt: comment?.updatedAt ?? null,
           }),
         },
         include: {
-          commentScores: true,
+          commentScores: {
+            where: {
+              userId: context.currentUser.id,
+            },
+          },
         },
       });
     } catch (error) {

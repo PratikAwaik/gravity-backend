@@ -22,7 +22,7 @@ export const typeDef = gql`
     score: Int!
     deleted: Boolean!
     createdAt: String!
-    updatedAt: String!
+    updatedAt: String
   }
 
   extend type Query {

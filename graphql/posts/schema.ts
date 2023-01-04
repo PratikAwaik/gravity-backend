@@ -27,7 +27,7 @@ export const typeDef = gql`
     commentsCount: Int!
     deleted: Boolean!
     createdAt: String!
-    updatedAt: String!
+    updatedAt: String
   }
 
   enum PostType {
@@ -53,7 +53,7 @@ export const typeDef = gql`
       type: PostType!
       communityId: String!
     ): Post!
-    updatePost(content: String!): Post!
+    updatePost(postId: String!, content: String!): Post!
     deletePost(postId: String!): Post!
     updatePostScore(postId: String!, direction: Direction!): Post!
   }

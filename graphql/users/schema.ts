@@ -17,7 +17,7 @@ export const typeDef = gql`
     posts: [Post]!
     comments: [Comment]!
     createdAt: String!
-    updatedAt: String!
+    updatedAt: String
     token: Token
   }
 

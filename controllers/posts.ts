@@ -279,6 +279,7 @@ export default class PostsController implements IPostsController {
               },
             },
           }),
+          updatedAt: post?.updatedAt ?? null,
         },
         include: {
           postScores: {
