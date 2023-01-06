@@ -3,6 +3,10 @@ import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
 import { Direction, MediaType, PostType } from "./enums";
 
+export interface IGetAllPostArgs {
+  pageNo?: number;
+}
+
 export interface IGetPostByIdArgs {
   postId: string;
 }

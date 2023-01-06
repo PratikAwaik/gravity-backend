@@ -42,7 +42,7 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    allPosts(cursor: Int): [Post]!
+    allPosts(pageNo: Int): [Post]!
     getPostById(postId: String!): Post!
   }
 

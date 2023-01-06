@@ -5,6 +5,7 @@ import { Direction, PostType } from "../models/enums";
 import {
   ICreatePostArgs,
   IDeletePostArgs,
+  IGetAllPostArgs,
   IGetPostByIdArgs,
   IPostsController,
   IUpdatePostArgs,
@@ -32,7 +33,7 @@ export default class PostsController implements IPostsController {
    */
   public getAllPosts = async (
     _: unknown,
-    args: any,
+    args: IGetAllPostArgs,
     context: Context<IApolloContext>
   ): Promise<Post[]> => {
     return await prisma.post.findMany({
@@ -48,8 +49,8 @@ export default class PostsController implements IPostsController {
       orderBy: {
         createdAt: "desc",
       },
-      // skip: args.cursor ? args.cursor : 0,
-      // take: 3,
+      skip: (args.pageNo ?? 0) * 12,
+      take: 12,
     });
   };
 
