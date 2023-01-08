@@ -26,5 +26,7 @@ export const typeDef = gql`
       description: String
       icon: String
     ): Community!
+    joinCommunity(communityId: String!): Community!
+    leaveCommunity(communityId: String!): Community!
   }
 `;

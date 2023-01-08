@@ -3,6 +3,8 @@ import { Context } from "apollo-server-core";
 import {
   ICommunityController,
   ICreateCommunityArgs,
+  IJoinCommunityArgs,
+  ILeaveCommunityArgs,
   IUpdateCommunityArgs,
 } from "../models/community";
 import { IApolloContext } from "../models/context";
@@ -14,6 +16,8 @@ import {
 import prisma from "../utils/prisma";
 import {
   validateCreateCommunityDetails,
+  validateJoinCommunityArgs,
+  validateLeaveCommunityArgs,
   validateUpdateCommunityArgs,
 } from "../validations/community";
 
@@ -96,5 +100,75 @@ export default class CommunityController implements ICommunityController {
     } catch (error) {
       return handleError(error as Error);
     }
+  };
+
+  /**
+   * join community
+   */
+  public joinCommunity = async (
+    _: unknown,
+    args: IJoinCommunityArgs,
+    context: Context<IApolloContext>
+  ): Promise<Community | Error> => {
+    handleAuthenticationError(context);
+    validateJoinCommunityArgs(args);
+
+    return await prisma.community.update({
+      where: {
+        id: args?.communityId,
+      },
+      data: {
+        members: {
+          connect: {
+            id: context?.currentUser?.id,
+          },
+        },
+        membersCount: {
+          increment: 1,
+        },
+      },
+      include: {
+        members: {
+          where: {
+            id: context?.currentUser?.id,
+          },
+        },
+      },
+    });
+  };
+
+  /**
+   * leave community
+   */
+  public leaveCommunity = async (
+    _: unknown,
+    args: ILeaveCommunityArgs,
+    context: Context<IApolloContext>
+  ): Promise<Community | Error> => {
+    handleAuthenticationError(context);
+    validateLeaveCommunityArgs(args);
+
+    return await prisma.community.update({
+      where: {
+        id: args?.communityId,
+      },
+      data: {
+        members: {
+          disconnect: {
+            id: context?.currentUser?.id,
+          },
+        },
+        membersCount: {
+          decrement: 1,
+        },
+      },
+      include: {
+        members: {
+          where: {
+            id: context?.currentUser?.id,
+          },
+        },
+      },
+    });
   };
 }

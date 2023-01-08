@@ -1,6 +1,8 @@
 import { UserInputError } from "apollo-server";
 import {
   ICreateCommunityArgs,
+  IJoinCommunityArgs,
+  ILeaveCommunityArgs,
   IUpdateCommunityArgs,
 } from "../models/community";
 import { throwError } from "../utils/errors";
@@ -25,6 +27,18 @@ export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
 };
 
 export const validateUpdateCommunityArgs = (args: IUpdateCommunityArgs) => {
+  if (!args.communityId) {
+    throwError(UserInputError, "communityId is required");
+  }
+};
+
+export const validateJoinCommunityArgs = (args: IJoinCommunityArgs) => {
+  if (!args.communityId) {
+    throwError(UserInputError, "communityId is required");
+  }
+};
+
+export const validateLeaveCommunityArgs = (args: ILeaveCommunityArgs) => {
   if (!args.communityId) {
     throwError(UserInputError, "communityId is required");
   }

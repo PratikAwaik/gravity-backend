@@ -13,11 +13,29 @@ export interface IUpdateCommunityArgs {
   icon?: string;
 }
 
+export interface IJoinCommunityArgs {
+  communityId: string;
+}
+
+export interface ILeaveCommunityArgs {
+  communityId: string;
+}
+
 export interface ICommunityController {
   getAllCommunities(): Promise<Community[]>;
   createCommunity(
     _: unknown,
     args: ICreateCommunityArgs,
+    context: Context<IApolloContext>
+  ): Promise<Community | Error>;
+  joinCommunity(
+    _: unknown,
+    args: IJoinCommunityArgs,
+    context: Context<IApolloContext>
+  ): Promise<Community | Error>;
+  leaveCommunity(
+    _: unknown,
+    args: ILeaveCommunityArgs,
     context: Context<IApolloContext>
   ): Promise<Community | Error>;
 }
