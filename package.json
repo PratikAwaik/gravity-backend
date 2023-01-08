@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash.merge": "^4.6.7",
     "prisma": "^4.4.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.8.4"
@@ -35,7 +35,7 @@
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.21",
+    "lodash.merge": "^4.6.2",
     "open-graph-scraper": "^5.0.2"
   }
 }

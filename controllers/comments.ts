@@ -94,6 +94,12 @@ export default class CommentsController implements ICommentsController {
         },
       });
 
+      const post = await prisma.post.findUniqueOrThrow({
+        where: {
+          id: args.postId,
+        },
+      });
+
       await prisma.post.update({
         where: {
           id: args.postId,
@@ -102,6 +108,7 @@ export default class CommentsController implements ICommentsController {
           commentsCount: {
             increment: 1,
           },
+          updatedAt: post?.updatedAt ?? null,
         },
       });
       return comment;
@@ -176,6 +183,12 @@ export default class CommentsController implements ICommentsController {
         },
       });
 
+      const post = await prisma.post.findUniqueOrThrow({
+        where: {
+          id: args.postId,
+        },
+      });
+
       await prisma.post.update({
         where: {
           id: args.postId,
@@ -184,6 +197,7 @@ export default class CommentsController implements ICommentsController {
           commentsCount: {
             decrement: 1,
           },
+          updatedAt: post?.updatedAt ?? null,
         },
       });
       return deletedComment;

@@ -1,5 +1,5 @@
+import merge from "lodash.merge";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { merge } from "lodash";
 import { userResolver, userSchema } from "./users";
 import { communityResolver, communitySchema } from "./community";
 import { postResolver, postSchema } from "./posts";
