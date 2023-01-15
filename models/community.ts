@@ -2,6 +2,10 @@ import { Community } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
 
+export interface IGetCommunityDetailsArgs {
+  name: string;
+}
+
 export interface ICreateCommunityArgs {
   name: string;
   description: string;
@@ -23,6 +27,10 @@ export interface ILeaveCommunityArgs {
 
 export interface ICommunityController {
   getAllCommunities(): Promise<Community[]>;
+  getCommunityDetails(
+    _: unknown,
+    args: IGetCommunityDetailsArgs
+  ): Promise<Community | null>;
   createCommunity(
     _: unknown,
     args: ICreateCommunityArgs,

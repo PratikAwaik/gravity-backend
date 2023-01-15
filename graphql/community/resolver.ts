@@ -2,6 +2,7 @@ import CommunityController from "../../controllers/community";
 
 const {
   getAllCommunities,
+  getCommunityDetails,
   createCommunity,
   updateCommunity,
   joinCommunity,
@@ -11,6 +12,7 @@ const {
 export const resolver = {
   Query: {
     allCommunities: getAllCommunities,
+    getCommunityDetails: getCommunityDetails,
   },
 
   Mutation: {

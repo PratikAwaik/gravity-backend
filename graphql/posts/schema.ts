@@ -26,8 +26,8 @@ export const typeDef = gql`
     score: Int!
     commentsCount: Int!
     deleted: Boolean!
-    createdAt: String!
-    updatedAt: String
+    createdAt: Float!
+    updatedAt: Float
   }
 
   enum PostType {

@@ -9,14 +9,15 @@ export const typeDef = gql`
     icon: String
     adminId: String!
     posts: [Post]!
-    members: [User]!
+    members: [User]
     membersCount: Int!
-    createdAt: String
-    updatedAt: String
+    createdAt: Float!
+    updatedAt: Float
   }
 
   extend type Query {
     allCommunities: [Community]!
+    getCommunityDetails(name: String!): Community
   }
 
   extend type Mutation {

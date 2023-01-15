@@ -1,11 +1,20 @@
 import { UserInputError } from "apollo-server";
 import {
   ICreateCommunityArgs,
+  IGetCommunityDetailsArgs,
   IJoinCommunityArgs,
   ILeaveCommunityArgs,
   IUpdateCommunityArgs,
 } from "../models/community";
 import { throwError } from "../utils/errors";
+
+export const validateGetCommunityDetailsArgs = (
+  args: IGetCommunityDetailsArgs
+) => {
+  if (!args.name) {
+    throwError(UserInputError, "community name is required");
+  }
+};
 
 export const validateCreateCommunityDetails = (args: ICreateCommunityArgs) => {
   if (args?.name?.length < 3) {

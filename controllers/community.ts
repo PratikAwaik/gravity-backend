@@ -3,6 +3,7 @@ import { Context } from "apollo-server-core";
 import {
   ICommunityController,
   ICreateCommunityArgs,
+  IGetCommunityDetailsArgs,
   IJoinCommunityArgs,
   ILeaveCommunityArgs,
   IUpdateCommunityArgs,
@@ -16,6 +17,7 @@ import {
 import prisma from "../utils/prisma";
 import {
   validateCreateCommunityDetails,
+  validateGetCommunityDetailsArgs,
   validateJoinCommunityArgs,
   validateLeaveCommunityArgs,
   validateUpdateCommunityArgs,
@@ -29,6 +31,21 @@ export default class CommunityController implements ICommunityController {
     return await prisma.community.findMany({
       include: {
         members: true,
+      },
+    });
+  };
+
+  /**
+   * get community details
+   */
+  public getCommunityDetails = async (
+    _: unknown,
+    args: IGetCommunityDetailsArgs
+  ): Promise<Community | null> => {
+    validateGetCommunityDetailsArgs(args);
+    return await prisma.community.findUnique({
+      where: {
+        name: args.name,
       },
     });
   };
