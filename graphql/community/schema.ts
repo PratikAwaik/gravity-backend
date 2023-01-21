@@ -8,6 +8,7 @@ export const typeDef = gql`
     description: String!
     icon: String
     adminId: String!
+    admin: User!
     posts: [Post]!
     members: [User]
     membersCount: Int!

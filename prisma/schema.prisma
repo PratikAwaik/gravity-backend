@@ -36,7 +36,7 @@ model Community {
   description  String
   icon         String?
   adminId      String    @map("admin_id")
-  user         User      @relation("moderated_communities", fields: [adminId], references: [id])
+  admin        User      @relation("moderated_communities", fields: [adminId], references: [id])
   posts        Post[]
   members      User[]    @relation("joined_communities")
   membersCount Int       @default(0) @map("members_count")

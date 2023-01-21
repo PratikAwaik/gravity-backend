@@ -37,6 +37,9 @@ export default class PostsController implements IPostsController {
     context: Context<IApolloContext>
   ): Promise<Post[]> => {
     return await prisma.post.findMany({
+      where: {
+        communityId: args.communityId,
+      },
       include: {
         author: true,
         community: {
@@ -46,6 +49,7 @@ export default class PostsController implements IPostsController {
                 id: context?.currentUser?.id,
               },
             },
+            admin: true,
           },
         },
         postScores: {

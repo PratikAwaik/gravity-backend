@@ -29,7 +29,8 @@ export interface ICommunityController {
   getAllCommunities(): Promise<Community[]>;
   getCommunityDetails(
     _: unknown,
-    args: IGetCommunityDetailsArgs
+    args: IGetCommunityDetailsArgs,
+    context: Context<IApolloContext>
   ): Promise<Community | null>;
   createCommunity(
     _: unknown,

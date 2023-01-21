@@ -5,6 +5,7 @@ import { Direction, MediaType, PostType } from "./enums";
 
 export interface IGetAllPostArgs {
   pageNo?: number;
+  communityId?: string;
 }
 
 export interface IGetPostByIdArgs {

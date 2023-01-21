@@ -40,12 +40,21 @@ export default class CommunityController implements ICommunityController {
    */
   public getCommunityDetails = async (
     _: unknown,
-    args: IGetCommunityDetailsArgs
+    args: IGetCommunityDetailsArgs,
+    context: Context<IApolloContext>
   ): Promise<Community | null> => {
     validateGetCommunityDetailsArgs(args);
     return await prisma.community.findUnique({
       where: {
         name: args.name,
+      },
+      include: {
+        admin: true,
+        members: {
+          where: {
+            id: context?.currentUser?.id,
+          },
+        },
       },
     });
   };
