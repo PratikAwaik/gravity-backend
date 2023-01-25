@@ -8,6 +8,11 @@ export interface IGetCommentsArgs {
   parentId: string | null;
 }
 
+export interface IGetAllUserCommentsArgs {
+  pageNo: number;
+  userId: string;
+}
+
 export interface ICreateCommentArgs {
   content: string;
   postId: string;
@@ -35,6 +40,11 @@ export interface ICommentsController {
     args: IGetCommentsArgs,
     context: Context<IApolloContext>
   ): Promise<Comment[]>;
+  getAllUserComments(
+    _: unknown,
+    args: IGetAllUserCommentsArgs,
+    context: Context<IApolloContext>
+  ): Promise<Comment[] | null>;
   createComment(
     _: unknown,
     args: ICreateCommentArgs,

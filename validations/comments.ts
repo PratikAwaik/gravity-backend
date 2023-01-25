@@ -2,6 +2,7 @@ import { UserInputError } from "apollo-server-core";
 import {
   ICreateCommentArgs,
   IDeleteCommentArgs,
+  IGetAllUserCommentsArgs,
   IGetCommentsArgs,
   IUpdateCommentArgs,
   IUpdateCommentScoreArgs,
@@ -11,6 +12,12 @@ import { throwError } from "../utils/errors";
 export const validateGetComments = (args: IGetCommentsArgs) => {
   if (!args.postId) {
     throwError(UserInputError, "postId is required");
+  }
+};
+
+export const validateGetAllUserComments = (args: IGetAllUserCommentsArgs) => {
+  if (!args.userId) {
+    throwError(UserInputError, "userId is required");
   }
 };
 

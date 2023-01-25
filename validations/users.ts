@@ -1,5 +1,6 @@
 import { UserInputError } from "apollo-server";
 import {
+  IGetUserDetailsArgs,
   ILoginUserArgs,
   IRegisterUserArgs,
   IUpdateUserArgs,
@@ -37,5 +38,11 @@ export const validateLoginUserDetails = (args: ILoginUserArgs) => {
 export const validateUpdateUserArgs = (args: IUpdateUserArgs) => {
   if (!args.profilePic) {
     throwError(UserInputError, "Profile Picture is required");
+  }
+};
+
+export const validateGetUserDetailsArgs = (args: IGetUserDetailsArgs) => {
+  if (!args.username) {
+    throwError(UserInputError, "Username is required");
   }
 };

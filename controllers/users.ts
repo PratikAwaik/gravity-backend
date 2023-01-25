@@ -2,6 +2,7 @@ import prisma from "../utils/prisma";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {
+  validateGetUserDetailsArgs,
   validateLoginUserDetails,
   validateRegisterUserDetails,
   validateUpdateUserArgs,
@@ -14,6 +15,7 @@ import {
 import { UserInputError } from "apollo-server";
 import { User } from "@prisma/client";
 import {
+  IGetUserDetailsArgs,
   ILoginUserArgs,
   IRegisterUserArgs,
   IUpdateUserArgs,
@@ -143,5 +145,15 @@ export default class UserController implements IUsersController {
         },
       })
       .joinedCommunities();
+  };
+
+  public getUserDetails = async (_: unknown, args: IGetUserDetailsArgs) => {
+    validateGetUserDetailsArgs(args);
+
+    return await prisma.user.findUnique({
+      where: {
+        username: args.username,
+      },
+    });
   };
 }

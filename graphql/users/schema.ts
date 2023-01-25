@@ -24,6 +24,7 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [User]!
     userSubscriptions: [Community]!
+    getUserDetails(username: String!): User
   }
 
   extend type Mutation {

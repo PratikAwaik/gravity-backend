@@ -39,6 +39,7 @@ export default class PostsController implements IPostsController {
     return await prisma.post.findMany({
       where: {
         communityId: args.communityId,
+        authorId: args.userId,
       },
       include: {
         author: true,

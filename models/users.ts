@@ -21,6 +21,10 @@ export interface IUpdateUserArgs {
   profilePic: string;
 }
 
+export interface IGetUserDetailsArgs {
+  username: string;
+}
+
 export interface IUsersController {
   allUsers(): Promise<User[]>;
   registerUser(

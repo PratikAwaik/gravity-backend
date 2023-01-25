@@ -6,12 +6,14 @@ const {
   loginUser,
   updateLoggedInUser,
   getUserSubscriptions,
+  getUserDetails,
 } = new UsersController();
 
 export const resolver = {
   Query: {
     allUsers: allUsers,
     userSubscriptions: getUserSubscriptions,
+    getUserDetails: getUserDetails,
   },
 
   Mutation: {
