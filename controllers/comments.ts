@@ -11,6 +11,7 @@ import {
 } from "../models/comments";
 import { IApolloContext } from "../models/context";
 import { Direction } from "../models/enums";
+import { PAGINATION_LIMIT } from "../utils/constants";
 import {
   handleAuthenticationError,
   handleError,
@@ -97,8 +98,8 @@ export default class CommentsController implements ICommentsController {
       orderBy: {
         createdAt: "desc",
       },
-      skip: (args.pageNo ?? 0) * 12,
-      take: 12,
+      skip: (args.pageNo ?? 0) * PAGINATION_LIMIT,
+      take: PAGINATION_LIMIT,
     });
   };
 

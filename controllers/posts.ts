@@ -26,6 +26,7 @@ import {
   validateUpdatePostScore,
 } from "../validations/posts";
 import ogs from "open-graph-scraper";
+import { PAGINATION_LIMIT } from "../utils/constants";
 
 export default class PostsController implements IPostsController {
   /**
@@ -62,8 +63,8 @@ export default class PostsController implements IPostsController {
       orderBy: {
         createdAt: "desc",
       },
-      skip: (args.pageNo ?? 0) * 12,
-      take: 12,
+      skip: (args.pageNo ?? 0) * PAGINATION_LIMIT,
+      take: PAGINATION_LIMIT,
     });
   };
 
