@@ -140,7 +140,7 @@ export default class PostsController implements IPostsController {
           title: args.title,
           content:
             args.type === PostType.MEDIA ? mediaPayload.content : args.content,
-          authorId: context.currentUser.id,
+          authorId: context?.currentUser?.id,
           type: args.type,
           mediaType:
             args.type === PostType.MEDIA
@@ -153,6 +153,17 @@ export default class PostsController implements IPostsController {
         include: {
           author: true,
           community: true,
+        },
+      });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: {
+            increment: 1,
+          },
         },
       });
 
@@ -219,7 +230,7 @@ export default class PostsController implements IPostsController {
         throwForbiddenError();
       }
 
-      return await prisma.post.update({
+      const deletedPost = await prisma.post.update({
         where: {
           id: args.postId,
         },
@@ -227,6 +238,19 @@ export default class PostsController implements IPostsController {
           deleted: true,
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: {
+            decrement: 1,
+          },
+        },
+      });
+
+      return deletedPost;
     } catch (error) {
       return handleError(error as Error);
     }
@@ -257,7 +281,12 @@ export default class PostsController implements IPostsController {
         },
       });
 
-      const newScore = getScore(args, post, postScore);
+      const { score: newScore, userKarma } = getScore(
+        args,
+        post,
+        postScore,
+        context?.currentUser?.karma
+      );
 
       // delete record if unvoting
       if (args.direction === Direction.UNVOTE && postScore?.id) {
@@ -283,7 +312,7 @@ export default class PostsController implements IPostsController {
         });
       }
 
-      return await prisma.post.update({
+      const updatedPost = await prisma.post.update({
         where: { id: args.postId },
         data: {
           score: newScore,
@@ -304,6 +333,17 @@ export default class PostsController implements IPostsController {
           },
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: userKarma,
+        },
+      });
+
+      return updatedPost;
     } catch (error) {
       return handleError(error as Error);
     }

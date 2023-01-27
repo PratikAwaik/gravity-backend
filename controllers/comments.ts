@@ -151,6 +151,18 @@ export default class CommentsController implements ICommentsController {
           updatedAt: post?.updatedAt ?? null,
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: {
+            increment: 1,
+          },
+        },
+      });
+
       return comment;
     } catch (error) {
       return handleError(error as Error);
@@ -240,6 +252,18 @@ export default class CommentsController implements ICommentsController {
           updatedAt: post?.updatedAt ?? null,
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: {
+            decrement: 1,
+          },
+        },
+      });
+
       return deletedComment;
     } catch (error) {
       return handleError(error as Error);
@@ -272,7 +296,12 @@ export default class CommentsController implements ICommentsController {
         },
       });
 
-      const newScore = getScore(args, comment, commentScore);
+      const { score: newScore, userKarma } = getScore(
+        args,
+        comment,
+        commentScore,
+        context?.currentUser?.karma
+      );
 
       if (args.direction === Direction.UNVOTE && commentScore?.id) {
         await prisma.commentScore.delete({
@@ -296,7 +325,7 @@ export default class CommentsController implements ICommentsController {
         });
       }
 
-      return await prisma.comment.update({
+      const updatedComment = await prisma.comment.update({
         where: {
           id: args.commentId,
         },
@@ -319,6 +348,17 @@ export default class CommentsController implements ICommentsController {
           },
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: userKarma,
+        },
+      });
+
+      return updatedComment;
     } catch (error) {
       return handleError(error as Error);
     }

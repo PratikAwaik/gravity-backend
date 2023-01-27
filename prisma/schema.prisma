@@ -25,6 +25,7 @@ model User {
   updatedAt            DateTime?      @updatedAt @map("updated_at")
   PostScore            PostScore[]
   CommentScore         CommentScore[]
+  karma                Int            @default(0)
 
   @@map("users")
 }

@@ -1,6 +1,5 @@
+import { User } from "@prisma/client";
+
 export interface IApolloContext {
-  currentUser: {
-    id: string;
-    username: string;
-  };
+  currentUser: User;
 }

@@ -76,16 +76,28 @@ export default class CommunityController implements ICommunityController {
           name: args.name,
           prefixedName: "c/" + args.name,
           description: args.description,
-          adminId: context.currentUser.id,
+          adminId: context?.currentUser?.id,
           members: {
             connect: {
-              id: context.currentUser.id,
+              id: context?.currentUser?.id,
             },
           },
           membersCount: 1,
           updatedAt: null,
         },
       });
+
+      await prisma.user.update({
+        where: {
+          id: context?.currentUser?.id,
+        },
+        data: {
+          karma: {
+            increment: 10,
+          },
+        },
+      });
+
       return community;
     } catch (error) {
       return handleError(error as Error);
