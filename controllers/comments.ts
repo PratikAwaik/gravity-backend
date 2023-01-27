@@ -285,6 +285,9 @@ export default class CommentsController implements ICommentsController {
         where: {
           id: args.commentId,
         },
+        include: {
+          author: true,
+        },
       });
 
       const commentScore = await prisma.commentScore.findFirst({
@@ -300,7 +303,7 @@ export default class CommentsController implements ICommentsController {
         args,
         comment,
         commentScore,
-        context?.currentUser?.karma
+        comment?.author?.karma
       );
 
       if (args.direction === Direction.UNVOTE && commentScore?.id) {
@@ -349,14 +352,16 @@ export default class CommentsController implements ICommentsController {
         },
       });
 
-      await prisma.user.update({
-        where: {
-          id: context?.currentUser?.id,
-        },
-        data: {
-          karma: userKarma,
-        },
-      });
+      if (newCommentScoreEntity?.userId !== comment?.authorId) {
+        await prisma.user.update({
+          where: {
+            id: comment?.authorId,
+          },
+          data: {
+            karma: userKarma,
+          },
+        });
+      }
 
       return updatedComment;
     } catch (error) {

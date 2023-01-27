@@ -16,6 +16,7 @@ export const typeDef = gql`
     joinedCommunities: [Community]!
     posts: [Post]!
     comments: [Comment]!
+    karma: Int!
     createdAt: Float!
     updatedAt: Float
     token: Token

@@ -273,6 +273,9 @@ export default class PostsController implements IPostsController {
         where: {
           id: args.postId,
         },
+        include: {
+          author: true,
+        },
       });
 
       const postScore = await prisma.postScore.findFirst({
@@ -285,7 +288,7 @@ export default class PostsController implements IPostsController {
         args,
         post,
         postScore,
-        context?.currentUser?.karma
+        post?.author?.karma
       );
 
       // delete record if unvoting
@@ -334,15 +337,16 @@ export default class PostsController implements IPostsController {
         },
       });
 
-      await prisma.user.update({
-        where: {
-          id: context?.currentUser?.id,
-        },
-        data: {
-          karma: userKarma,
-        },
-      });
-
+      if (newPostScoreEntity?.userId !== post?.authorId) {
+        await prisma.user.update({
+          where: {
+            id: post?.authorId,
+          },
+          data: {
+            karma: userKarma,
+          },
+        });
+      }
       return updatedPost;
     } catch (error) {
       return handleError(error as Error);
