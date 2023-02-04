@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child index.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "yarn build && node dist/index.js"
+    "start": "npx prisma db push && yarn build && node dist/index.js"
   },
   "repository": {
     "type": "git",
