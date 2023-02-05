@@ -1,7 +1,7 @@
 import UsersController from "../../controllers/users";
 
 const {
-  allUsers,
+  getAllUsers,
   registerUser,
   loginUser,
   updateLoggedInUser,
@@ -11,7 +11,7 @@ const {
 
 export const resolver = {
   Query: {
-    allUsers: allUsers,
+    getAllUsers: getAllUsers,
     userSubscriptions: getUserSubscriptions,
     getUserDetails: getUserDetails,
   },

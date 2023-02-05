@@ -22,7 +22,6 @@ import prisma from "../utils/prisma";
 import {
   validateCreateCommentDetails,
   validateDeleteCommentArgs,
-  validateGetAllUserComments,
   validateGetComments,
   validateUpdateCommentArgs,
   validateUpdateCommentScore,
@@ -69,16 +68,18 @@ export default class CommentsController implements ICommentsController {
   /**
    * get all user comments
    */
-  public getAllUserComments = async (
+  public getAllComments = async (
     _: unknown,
     args: IGetAllUserCommentsArgs,
     context: Context<IApolloContext>
   ): Promise<Comment[] | null> => {
-    validateGetAllUserComments(args);
-
     return await prisma.comment.findMany({
       where: {
         AND: [{ authorId: args.userId }, { deleted: false }],
+        content: {
+          contains: args.search ?? "",
+          mode: "insensitive",
+        },
       },
       include: {
         author: true,

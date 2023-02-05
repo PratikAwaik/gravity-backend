@@ -23,7 +23,7 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    allUsers: [User]!
+    getAllUsers(search: String, pageNo: Int): [User]!
     userSubscriptions: [Community]!
     getUserDetails(username: String!): User
   }

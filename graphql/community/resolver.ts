@@ -7,12 +7,14 @@ const {
   updateCommunity,
   joinCommunity,
   leaveCommunity,
+  getSearchCommunities,
 } = new CommunityController();
 
 export const resolver = {
   Query: {
     allCommunities: getAllCommunities,
     getCommunityDetails: getCommunityDetails,
+    getSearchCommunities: getSearchCommunities,
   },
 
   Mutation: {

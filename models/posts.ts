@@ -7,6 +7,7 @@ export interface IGetAllPostArgs {
   pageNo?: number;
   communityId?: string;
   userId?: string;
+  search?: string;
 }
 
 export interface IGetPostByIdArgs {

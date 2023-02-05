@@ -41,6 +41,12 @@ export default class PostsController implements IPostsController {
       where: {
         communityId: args.communityId,
         authorId: args.userId,
+        OR: [
+          {
+            title: { contains: args.search ?? "", mode: "insensitive" },
+            content: { contains: args.search ?? "", mode: "insensitive" },
+          },
+        ],
       },
       include: {
         author: true,

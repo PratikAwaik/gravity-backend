@@ -4,11 +4,13 @@ import {
   ICommunityController,
   ICreateCommunityArgs,
   IGetCommunityDetailsArgs,
+  IGetSearchedCommunitiesArgs,
   IJoinCommunityArgs,
   ILeaveCommunityArgs,
   IUpdateCommunityArgs,
 } from "../models/community";
 import { IApolloContext } from "../models/context";
+import { PAGINATION_LIMIT } from "../utils/constants";
 import {
   handleAuthenticationError,
   handleError,
@@ -32,6 +34,28 @@ export default class CommunityController implements ICommunityController {
       include: {
         members: true,
       },
+    });
+  };
+
+  /**
+   * get searched communities
+   */
+  public getSearchCommunities = async (
+    _: unknown,
+    args: IGetSearchedCommunitiesArgs
+  ): Promise<Community[] | null> => {
+    return await prisma.community.findMany({
+      where: {
+        name: {
+          contains: args.search ?? "",
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        membersCount: "desc",
+      },
+      skip: (args.pageNo ?? 0) * PAGINATION_LIMIT,
+      take: args.limit ?? PAGINATION_LIMIT,
     });
   };
 

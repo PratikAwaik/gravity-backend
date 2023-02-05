@@ -42,7 +42,12 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    allPosts(pageNo: Int, communityId: String, userId: String): [Post]!
+    allPosts(
+      pageNo: Int
+      communityId: String
+      userId: String
+      search: String
+    ): [Post]!
     getPostById(postId: String!): Post!
   }
 

@@ -2,6 +2,11 @@ import { User } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
 
+export interface IGetAllUsersArgs {
+  pageNo: number | null;
+  search?: string;
+}
+
 export interface ILoginUserArgs {
   username: string;
   password: string;
@@ -26,7 +31,7 @@ export interface IGetUserDetailsArgs {
 }
 
 export interface IUsersController {
-  allUsers(): Promise<User[]>;
+  getAllUsers(_: unknown, args: IGetAllUsersArgs): Promise<User[]>;
   registerUser(
     _: unknown,
     args: IRegisterUserArgs

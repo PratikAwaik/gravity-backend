@@ -15,12 +15,6 @@ export const validateGetComments = (args: IGetCommentsArgs) => {
   }
 };
 
-export const validateGetAllUserComments = (args: IGetAllUserCommentsArgs) => {
-  if (!args.userId) {
-    throwError(UserInputError, "userId is required");
-  }
-};
-
 export const validateCreateCommentDetails = (args: ICreateCommentArgs) => {
   if (!args.content) {
     throwError(UserInputError, "Content should not be empty");

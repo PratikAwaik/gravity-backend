@@ -2,7 +2,7 @@ import CommentsController from "../../controllers/comments";
 
 const {
   getComments,
-  getAllUserComments,
+  getAllComments,
   createComment,
   updateComment,
   deleteComment,
@@ -12,7 +12,7 @@ const {
 export const resolver = {
   Query: {
     allComments: getComments,
-    getAllUserComments: getAllUserComments,
+    getAllComments: getAllComments,
   },
   Mutation: {
     createComment: createComment,

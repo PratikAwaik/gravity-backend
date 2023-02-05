@@ -19,6 +19,7 @@ export const typeDef = gql`
   extend type Query {
     allCommunities: [Community]!
     getCommunityDetails(name: String!): Community
+    getSearchCommunities(search: String, pageNo: Int, limit: Int): [Community]
   }
 
   extend type Mutation {

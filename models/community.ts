@@ -2,6 +2,12 @@ import { Community } from "@prisma/client";
 import { Context } from "apollo-server-core";
 import { IApolloContext } from "./context";
 
+export interface IGetSearchedCommunitiesArgs {
+  search: string | null;
+  pageNo?: number;
+  limit?: number;
+}
+
 export interface IGetCommunityDetailsArgs {
   name: string;
 }
@@ -27,6 +33,10 @@ export interface ILeaveCommunityArgs {
 
 export interface ICommunityController {
   getAllCommunities(): Promise<Community[]>;
+  getSearchCommunities(
+    _: unknown,
+    args: IGetSearchedCommunitiesArgs
+  ): Promise<Community[] | null>;
   getCommunityDetails(
     _: unknown,
     args: IGetCommunityDetailsArgs,

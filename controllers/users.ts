@@ -15,6 +15,7 @@ import {
 import { UserInputError } from "apollo-server";
 import { User } from "@prisma/client";
 import {
+  IGetAllUsersArgs,
   IGetUserDetailsArgs,
   ILoginUserArgs,
   IRegisterUserArgs,
@@ -29,8 +30,18 @@ export default class UserController implements IUsersController {
   /**
    * get all users
    */
-  public allUsers = async (): Promise<User[]> => {
-    return await prisma.user.findMany({});
+  public getAllUsers = async (
+    _: unknown,
+    args: IGetAllUsersArgs
+  ): Promise<User[]> => {
+    return await prisma.user.findMany({
+      where: {
+        username: {
+          contains: args.search ?? "",
+          mode: "insensitive",
+        },
+      },
+    });
   };
 
   /**

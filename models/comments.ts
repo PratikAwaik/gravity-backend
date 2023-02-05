@@ -10,7 +10,8 @@ export interface IGetCommentsArgs {
 
 export interface IGetAllUserCommentsArgs {
   pageNo: number;
-  userId: string;
+  userId?: string;
+  search?: string;
 }
 
 export interface ICreateCommentArgs {
@@ -40,7 +41,7 @@ export interface ICommentsController {
     args: IGetCommentsArgs,
     context: Context<IApolloContext>
   ): Promise<Comment[]>;
-  getAllUserComments(
+  getAllComments(
     _: unknown,
     args: IGetAllUserCommentsArgs,
     context: Context<IApolloContext>
