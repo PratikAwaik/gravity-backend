@@ -7,6 +7,9 @@ const server = new ApolloServer({
   schema: executableSchema,
   context: context,
   csrfPrevention: true,
+  cors: {
+    origin: [process.env.ALLOW_ORIGIN || false],
+  },
   cache: "bounded",
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
