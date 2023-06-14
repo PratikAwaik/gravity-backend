@@ -8,7 +8,8 @@ const server = new ApolloServer({
   context: context,
   csrfPrevention: false,
   cors: {
-    origin: [process.env.ALLOW_ORIGIN || false],
+    origin: "*",
+    credentials: true,
   },
   cache: "bounded",
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
