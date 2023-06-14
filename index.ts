@@ -6,7 +6,7 @@ import { context } from "./graphql/context";
 const server = new ApolloServer({
   schema: executableSchema,
   context: context,
-  csrfPrevention: false,
+  csrfPrevention: true,
   cors: {
     origin: "*",
     credentials: true,
