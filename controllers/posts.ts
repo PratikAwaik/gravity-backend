@@ -1,7 +1,7 @@
-import { Post } from "@prisma/client";
-import { Context } from "apollo-server-core";
-import { IApolloContext } from "../models/context";
-import { Direction, PostType } from "../models/enums";
+import {Post} from "@prisma/client";
+import {Context} from "apollo-server-core";
+import {IApolloContext} from "../models/context";
+import {Direction, PostType} from "../models/enums";
 import {
   ICreatePostArgs,
   IDeletePostArgs,
@@ -17,7 +17,7 @@ import {
   handleError,
   throwForbiddenError,
 } from "../utils/errors";
-import { getScore } from "../utils/helpers";
+import {getScore} from "../utils/helpers";
 import prisma from "../utils/prisma";
 import {
   validateCreatePostDetails,
@@ -26,7 +26,7 @@ import {
   validateUpdatePostScore,
 } from "../validations/posts";
 import ogs from "open-graph-scraper";
-import { PAGINATION_LIMIT } from "../utils/constants";
+import {PAGINATION_LIMIT} from "../utils/constants";
 
 export default class PostsController implements IPostsController {
   /**
@@ -43,8 +43,8 @@ export default class PostsController implements IPostsController {
         authorId: args.userId,
         OR: [
           {
-            title: { contains: args.search ?? "", mode: "insensitive" },
-            content: { contains: args.search ?? "", mode: "insensitive" },
+            title: {contains: args.search ?? "", mode: "insensitive"},
+            // content: { contains: args.search ?? "", mode: "insensitive" },
           },
         ],
       },
@@ -89,7 +89,15 @@ export default class PostsController implements IPostsController {
       },
       include: {
         author: true,
-        community: true,
+        community: {
+          include: {
+            members: {
+              where: {
+                id: context?.currentUser?.id,
+              },
+            },
+          },
+        },
         ...(context?.currentUser?.id && {
           postScores: {
             where: {
@@ -137,7 +145,7 @@ export default class PostsController implements IPostsController {
         const options = {
           url: args.content,
         };
-        const { result } = await ogs(options);
+        const {result} = await ogs(options);
         articleImage = (result as any).ogImage?.url;
       }
 
@@ -286,11 +294,11 @@ export default class PostsController implements IPostsController {
 
       const postScore = await prisma.postScore.findFirst({
         where: {
-          AND: [{ userId: context.currentUser.id }, { postId: args.postId }],
+          AND: [{userId: context.currentUser.id}, {postId: args.postId}],
         },
       });
 
-      const { score: newScore, userKarma } = getScore(
+      const {score: newScore, userKarma} = getScore(
         args,
         post,
         postScore,
@@ -322,7 +330,7 @@ export default class PostsController implements IPostsController {
       }
 
       const updatedPost = await prisma.post.update({
-        where: { id: args.postId },
+        where: {id: args.postId},
         data: {
           score: newScore,
           ...(args.direction !== Direction.UNVOTE && {
