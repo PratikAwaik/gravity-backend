@@ -1,6 +1,6 @@
-import { Community } from "@prisma/client";
-import { Context } from "apollo-server-core";
-import { IApolloContext } from "./context";
+import {Community} from "@prisma/client";
+import {Context} from "apollo-server-core";
+import {IApolloContext} from "./context";
 
 export interface IGetSearchedCommunitiesArgs {
   search: string | null;
@@ -17,10 +17,15 @@ export interface ICreateCommunityArgs {
   description: string;
 }
 
+export interface ICommunityIconPayload {
+  content: string;
+  publicId?: string;
+}
+
 export interface IUpdateCommunityArgs {
   communityId: string;
   description?: string;
-  icon?: string;
+  icon?: ICommunityIconPayload;
 }
 
 export interface IJoinCommunityArgs {

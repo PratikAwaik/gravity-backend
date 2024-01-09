@@ -35,7 +35,9 @@ model Community {
   name         String    @unique @db.VarChar(256)
   prefixedName String    @unique @map("prefixed_name") @db.VarChar(256)
   description  String
-  icon         String?
+  // url: cloudinary_url
+  // public_id: cloudinary_public_id
+  icon         Json?
   adminId      String    @map("admin_id")
   admin        User      @relation("moderated_communities", fields: [adminId], references: [id])
   posts        Post[]

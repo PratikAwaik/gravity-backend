@@ -1,12 +1,28 @@
-import { gql } from "apollo-server-core";
+import {gql} from "apollo-server-core";
 
 export const typeDef = gql`
+  type CommunityIcon {
+    url: String
+    publicId: String
+  }
+
+  input CommunityIconPayload {
+    content: String
+    publicId: String
+  }
+
+  # input UpdateCommunityPayload {
+  #   communityId: String!
+  #   description: String
+  #   icon: CommunityIconPayload
+  # }
+
   type Community {
     id: ID!
     name: String!
     prefixedName: String!
     description: String!
-    icon: String
+    icon: CommunityIcon
     adminId: String!
     admin: User!
     posts: [Post]!
@@ -27,7 +43,7 @@ export const typeDef = gql`
     updateCommunity(
       communityId: String!
       description: String
-      icon: String
+      icon: CommunityIconPayload
     ): Community!
     joinCommunity(communityId: String!): Community!
     leaveCommunity(communityId: String!): Community!

@@ -1,5 +1,5 @@
-import { Community } from "@prisma/client";
-import { Context } from "apollo-server-core";
+import {Community} from "@prisma/client";
+import {Context} from "apollo-server-core";
 import {
   ICommunityController,
   ICreateCommunityArgs,
@@ -9,8 +9,8 @@ import {
   ILeaveCommunityArgs,
   IUpdateCommunityArgs,
 } from "../models/community";
-import { IApolloContext } from "../models/context";
-import { PAGINATION_LIMIT } from "../utils/constants";
+import {IApolloContext} from "../models/context";
+import {PAGINATION_LIMIT} from "../utils/constants";
 import {
   handleAuthenticationError,
   handleError,
@@ -24,6 +24,7 @@ import {
   validateLeaveCommunityArgs,
   validateUpdateCommunityArgs,
 } from "../validations/community";
+import cloudinary from "../utils/cloudinary";
 
 export default class CommunityController implements ICommunityController {
   /**
@@ -150,13 +151,27 @@ export default class CommunityController implements ICommunityController {
         throwForbiddenError();
       }
 
+      let uploadedMedia;
+
+      if (args.icon?.content) {
+        uploadedMedia = await cloudinary.uploader.upload(args.icon.content, {
+          upload_prest: process.env.CLOUDINARY_UPLOAD_PRESET,
+          folder: "gravityuploads",
+          resource_type: "auto",
+          public_id: args.icon.publicId,
+        });
+      }
+
       return await prisma.community.update({
         where: {
           id: args.communityId,
         },
         data: {
           description: args.description ?? community.description,
-          icon: args.icon ?? community.icon,
+          icon: args.icon?.content && {
+            url: uploadedMedia?.secure_url,
+            publicId: uploadedMedia?.public_id,
+          },
         },
       });
     } catch (error) {
