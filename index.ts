@@ -7,6 +7,8 @@ import {config} from "dotenv";
 // load env variables
 config();
 
+console.log(process.env.NODE_ENV);
+
 const server = new ApolloServer({
   schema: executableSchema,
   context: context,
