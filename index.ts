@@ -7,7 +7,7 @@ import {config} from "dotenv";
 // load env variables
 config();
 
-console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV, process.env.GRAVITY_FRONTEND_PROD_URL);
 
 const server = new ApolloServer({
   schema: executableSchema,
