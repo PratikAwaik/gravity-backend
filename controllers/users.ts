@@ -11,9 +11,10 @@ import {
   handleAuthenticationError,
   handleError,
   throwError,
+  throwForbiddenError,
 } from "../utils/errors";
-import { UserInputError } from "apollo-server";
-import { User } from "@prisma/client";
+import {UserInputError} from "apollo-server";
+import {User} from "@prisma/client";
 import {
   IGetAllUsersArgs,
   IGetUserDetailsArgs,
@@ -23,8 +24,9 @@ import {
   IUsersController,
   UserWithToken,
 } from "../models/users";
-import { Context } from "apollo-server-core";
-import { IApolloContext } from "../models/context";
+import {Context} from "apollo-server-core";
+import {IApolloContext} from "../models/context";
+import cloudinary from "../utils/cloudinary";
 
 export default class UserController implements IUsersController {
   /**
@@ -67,7 +69,7 @@ export default class UserController implements IUsersController {
         id: user.id,
       };
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
-      return { ...user, token: { value: token } };
+      return {...user, token: {value: token}};
     } catch (error: any) {
       return handleError(error as Error);
     }
@@ -105,7 +107,7 @@ export default class UserController implements IUsersController {
         id: user?.id,
       };
       const token = jwt.sign(userForToken, process.env.JWT_SECRET || "");
-      return { ...user, token: { value: token } };
+      return {...user, token: {value: token}};
     } catch (error) {
       return handleError(error as Error);
     }
@@ -122,13 +124,39 @@ export default class UserController implements IUsersController {
     handleAuthenticationError(context);
     validateUpdateUserArgs(args);
 
+    const payload = args.payload;
     try {
+      const user = await prisma.user.findUniqueOrThrow({
+        where: {
+          id: payload.userId,
+        },
+      });
+
+      if (user?.id !== context.currentUser.id) {
+        throwForbiddenError();
+      }
+
+      let uploadedMedia;
+      if (payload?.icon.content) {
+        uploadedMedia = await cloudinary.uploader.upload(payload.icon.content, {
+          upload_prest: process.env.CLOUDINARY_UPLOAD_PRESET,
+          folder: "gravityuploads",
+          resource_type: "auto",
+          public_id: payload.icon.publicId,
+          overwrite: true,
+          invalidate: true,
+        });
+      }
+
       return await prisma.user.update({
         where: {
           id: context.currentUser.id,
         },
         data: {
-          profilePic: args.profilePic,
+          icon: {
+            url: uploadedMedia?.secure_url,
+            publicId: uploadedMedia?.public_id,
+          },
         },
       });
     } catch (error) {

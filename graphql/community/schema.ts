@@ -1,28 +1,18 @@
 import {gql} from "apollo-server-core";
 
 export const typeDef = gql`
-  type CommunityIcon {
-    url: String
-    publicId: String
+  input UpdateCommunityPayload {
+    communityId: String!
+    description: String
+    icon: IconPayload
   }
-
-  input CommunityIconPayload {
-    content: String
-    publicId: String
-  }
-
-  # input UpdateCommunityPayload {
-  #   communityId: String!
-  #   description: String
-  #   icon: CommunityIconPayload
-  # }
 
   type Community {
     id: ID!
     name: String!
     prefixedName: String!
     description: String!
-    icon: CommunityIcon
+    icon: Icon
     adminId: String!
     admin: User!
     posts: [Post]!
@@ -40,11 +30,7 @@ export const typeDef = gql`
 
   extend type Mutation {
     createCommunity(name: String!, description: String!): Community!
-    updateCommunity(
-      communityId: String!
-      description: String
-      icon: CommunityIconPayload
-    ): Community!
+    updateCommunity(payload: UpdateCommunityPayload): Community!
     joinCommunity(communityId: String!): Community!
     leaveCommunity(communityId: String!): Community!
   }

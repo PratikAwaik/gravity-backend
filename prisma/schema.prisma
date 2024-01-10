@@ -16,7 +16,9 @@ model User {
   prefixedName         String         @unique @map("prefixed_name") @db.VarChar(256)
   email                String         @unique
   password             String
-  profilePic           String?        @map("profile_pic")
+  // url: cloudinary_url
+  // public_id: cloudinary_public_id
+  icon                 Json?          @map("icon")
   moderatedCommunities Community[]    @relation("moderated_communities")
   joinedCommunities    Community[]    @relation("joined_communities")
   posts                Post[]
@@ -37,7 +39,7 @@ model Community {
   description  String
   // url: cloudinary_url
   // public_id: cloudinary_public_id
-  icon         Json?
+  icon         Json?     @map("icon")
   adminId      String    @map("admin_id")
   admin        User      @relation("moderated_communities", fields: [adminId], references: [id])
   posts        Post[]

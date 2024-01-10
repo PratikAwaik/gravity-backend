@@ -1,6 +1,7 @@
-import { User } from "@prisma/client";
-import { Context } from "apollo-server-core";
-import { IApolloContext } from "./context";
+import {User} from "@prisma/client";
+import {Context} from "apollo-server-core";
+import {IApolloContext} from "./context";
+import {IIconPayload} from "./common";
 
 export interface IGetAllUsersArgs {
   pageNo: number | null;
@@ -23,7 +24,10 @@ export interface UserWithToken extends User {
 }
 
 export interface IUpdateUserArgs {
-  profilePic: string;
+  payload: {
+    userId: string;
+    icon: IIconPayload;
+  };
 }
 
 export interface IGetUserDetailsArgs {

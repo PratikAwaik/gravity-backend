@@ -1,8 +1,13 @@
-import { gql } from "apollo-server-core";
+import {gql} from "apollo-server-core";
 
 export const typeDef = gql`
   type Token {
     value: String!
+  }
+
+  input UpdateLoggedInUserPayload {
+    userId: ID!
+    icon: IconPayload
   }
 
   type User {
@@ -11,7 +16,7 @@ export const typeDef = gql`
     prefixedName: String!
     email: String!
     password: String!
-    profilePic: String
+    icon: Icon
     moderatedCommunities: [Community]!
     joinedCommunities: [Community]!
     posts: [Post]!
@@ -31,6 +36,6 @@ export const typeDef = gql`
   extend type Mutation {
     registerUser(username: String!, email: String!, password: String!): User!
     loginUser(username: String!, password: String!): User!
-    updateLoggedInUser(profilePic: String!): User!
+    updateLoggedInUser(payload: UpdateLoggedInUserPayload): User!
   }
 `;
