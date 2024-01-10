@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only --no-notify --exit-child index.ts",
+    "dev": "export NODE_ENV=development && ts-node-dev --transpile-only --no-notify --exit-child index.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "npx prisma db push && yarn build && node dist/index.js"
+    "start": "export NODE_ENV=production && npx prisma db push && yarn build && node dist/index.js"
   },
   "repository": {
     "type": "git",
