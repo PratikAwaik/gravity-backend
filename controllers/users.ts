@@ -138,13 +138,14 @@ export default class UserController implements IUsersController {
 
       let uploadedMedia;
       if (payload?.icon.content) {
+        if (payload.icon.publicId) {
+          await cloudinary.uploader.destroy(payload.icon.publicId);
+        }
+
         uploadedMedia = await cloudinary.uploader.upload(payload.icon.content, {
-          upload_prest: process.env.CLOUDINARY_UPLOAD_PRESET,
+          upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
           folder: "gravityuploads",
           resource_type: "auto",
-          public_id: payload.icon.publicId,
-          overwrite: true,
-          invalidate: true,
         });
       }
 
