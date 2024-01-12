@@ -14,12 +14,13 @@ const server = new ApolloServer({
   context: context,
   csrfPrevention: true,
   cors: {
-    credentials: true,
-    origin: [
-      (process.env.NODE_ENV === "development"
-        ? process.env.GRAVITY_FRONTEND_DEV_URL
-        : process.env.GRAVITY_FRONTEND_PROD_URL) as string,
-    ],
+    // credentials: true,
+    // origin: [
+    //   (process.env.NODE_ENV === "development"
+    //     ? process.env.GRAVITY_FRONTEND_DEV_URL
+    //     : process.env.GRAVITY_FRONTEND_PROD_URL) as string,
+    // ],
+    origin: "*",
   },
   cache: "bounded",
   plugins: [ApolloServerPluginLandingPageLocalDefault({embed: true})],
