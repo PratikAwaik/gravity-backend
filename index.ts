@@ -12,16 +12,15 @@ console.log(process.env.NODE_ENV, process.env.GRAVITY_FRONTEND_PROD_URL);
 const server = new ApolloServer({
   schema: executableSchema,
   context: context,
-  csrfPrevention: true,
-  cors: {
-    // credentials: true,
-    // origin: [
-    //   (process.env.NODE_ENV === "development"
-    //     ? process.env.GRAVITY_FRONTEND_DEV_URL
-    //     : process.env.GRAVITY_FRONTEND_PROD_URL) as string,
-    // ],
-    origin: "*",
-  },
+  csrfPrevention: false,
+  // cors: {
+  //   credentials: true,
+  //   origin: [
+  //     (process.env.NODE_ENV === "development"
+  //       ? process.env.GRAVITY_FRONTEND_DEV_URL
+  //       : process.env.GRAVITY_FRONTEND_PROD_URL) as string,
+  //   ],
+  // },
   cache: "bounded",
   plugins: [ApolloServerPluginLandingPageLocalDefault({embed: true})],
 });
